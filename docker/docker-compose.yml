@@ -1,0 +1,16 @@
+discovery:
+  image: ldauvergne/discovery-microservice
+  ports:
+   - "8761:8761"
+edge:
+  image: ldauvergne/edge-microservice
+  ports:
+   - "8765:8765"
+  links:
+   - discovery
+helloworld:
+  image: ldauvergne/helloworld-microservice
+  ports:
+   - "8080:8080"
+  links:
+   - discovery

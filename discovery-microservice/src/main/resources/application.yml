@@ -1,0 +1,12 @@
+server:
+  port: 8761
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+eureka:
+  instance:
+    hostname: discovery
