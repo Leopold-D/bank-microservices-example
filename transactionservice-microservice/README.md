@@ -99,6 +99,6 @@ Tests are contained in Test_SOAPUI.xml file. This implies you to have a proper S
 ## Notice
 
 - Endpoint is unsecured
-- Code should be optimised for prod
+- Code should be optimized for prod
 - This is a PoC !
 - Tests should be more exhaustive

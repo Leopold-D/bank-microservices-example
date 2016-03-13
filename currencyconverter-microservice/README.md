@@ -14,7 +14,7 @@ http://localhost:8765/currencyconverter/rates?from=<currency_from>&to=<currency_
 ## Notice
 
 - Endpoint is unsecured
-- Code should be optimised for prod
+- Code should be optimized for prod
 - This is a PoC !
 - Includes a daily buffer for rates as rate service updates once a day
 

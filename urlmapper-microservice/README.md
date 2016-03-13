@@ -69,7 +69,21 @@ Gives :
 
 Which seems to be correct knowing the fact that BoatShoes is a sub-category of Shoes.
 
-**
+- To be able to check an URL validity, a graph referencing elements ID (easy & query style) and their parents/children should be created,
+once the different String couples mapped to their ID in a list representing the URL (*1/2/6/8/1543213/9* for ie), it's pretty easy to browse the
+graph and check if the URL is valid. 
+
+The task being a Mapper, and this URL Validator approach being different, it should only be 
+used for hardening site browsing. In a common use case, if the endpoint isn't available, a BAD_REQUEST could be returned directly 
+at service level.
+
+## Notice
+
+- Endpoint is unsecured
+- Code should be optimized for prod
+- This is a PoC !
+- Tests are missing
+
 ## Example calls
 
 http://localhost:8765/urlmapper/endpoint/**
