@@ -6,7 +6,14 @@ Demonstrated concepts:
 * Integration testing using Docker
 * Service discovery
 * API gateway
+* Helloworld
 * Currency Converter
+
+Base URLs:
+
+http://localhost:8765/helloworld/
+http://localhost:8765/currencyconverter/
+http://localhost:8765/transactionservice/
 
 ## Docker
 
@@ -20,28 +27,17 @@ This project contains two discovery services, one on Netflix Eureka, and the oth
 
 Each microservice will coordinate with Eureka to retrieve API routes for the entire cluster. Using this strategy each microservice in a cluster can be load balanced and exposed through one API gateway. Each service will automatically discover and route API requests to the service that owns the route. This proxying technique is equally helpful when developing user interfaces, as the full API of the platform is available through its own host as a proxy.
 
+## Helloworld
+
+[Helloworld](https://github.com/Leopold-D/microservices-example/tree/master/helloworld-microservice/README.md)
+
 ## Currency Converter
 
-### Intro
+[Currency Converter](https://github.com/Leopold-D/microservices-example/tree/master/currencyconverter-microservice/README.md)
 
-Implement a server­side Java currency converter, which converts Euro, Dollars and Yen 
-in all directions. Please Expose your service in a RESTful API. Use a common 
-framework for your business logic. Please use exchange rates from a publicly available 
-API.
+## Transaction Service
 
-### Access
-
-http://localhost:8765/currencyconverter/rates?from=<currency_from>&to=<currency_to>&value=<value>
-
-### Notice
-
-- Endpoint is unsecured
-- Code should be optimised for prod
-- This is a PoC !
-
-### Video
-
-[Currency Converter Example](https://www.youtube.com/watch?v=3B1OduROSfg)
+[Transaction Service](https://github.com/Leopold-D/microservices-example/tree/master/transactionservice-microservice/README.md)
 
 # References
 

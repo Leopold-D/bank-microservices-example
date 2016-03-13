@@ -38,14 +38,12 @@ public class CurrencyConverterCompositeService {
 	Util util;
 
 	Map<RateCouple, RateValue> rates = new HashMap<RateCouple, RateValue>();
-	
+
 	@RequestMapping("/")
 	public String mHello() {
 		return "{\"timestamp\":\"" + new Date() + "\",\"content\":\"Hello from Currency Converter Service\"}";
 	}
 
-	
-	
 	@GET
 	@RequestMapping("/rates")
 	@Produces("application/json")
@@ -53,32 +51,50 @@ public class CurrencyConverterCompositeService {
 			@RequestParam(value = "to") String to, @RequestParam(value = "value") float value) {
 
 		if ((from.equals("USD") || from.equals("EUR") || from.equals("JPY"))
-				&& (to.equals("USD") || to.equals("EUR") || to.equals("JPY"))) {
-			
+				&& (to.equals("USD") || to.equals("EUR") || to.equals("JPY")) && !from.equals(to)) {
+
+			LOG.info(String.valueOf(rates.size()));
 			RateCouple rateCouple = new RateCouple(from, to);
-			
-			if(!rates.containsKey(rateCouple) || !checkRateValueValidity(rates.get(rateCouple))){
-				rates.put(rateCouple, fetchRate(rateCouple));
+
+			// TODO: Optimize
+			if (rates.containsKey(rateCouple) && checkRateValueValidity(rates.get(rateCouple))) {
+				return util.createOkResponse(
+						new ResultData(value * rates.get(rateCouple).getValue(), rateCouple, rates.get(rateCouple)));
+
+			} else {
+				LOG.info("Rate doesn't exist or is outdated");
+				RateValue rate = fetchRate(rateCouple);
+				if (rate != null) {
+					rates.put(rateCouple, rate);
+				} else {
+					return util.createResponse(null, HttpStatus.SERVICE_UNAVAILABLE);
+				}
 			}
-			return util.createOkResponse(new ResultData(value*rates.get(rateCouple).getValue(),rateCouple,rates.get(rateCouple)));
+
+			LOG.info("Rate exist and is valid");
+
 		}
 		return util.createResponse(null, HttpStatus.BAD_REQUEST);
 	}
-	
-	
-	public Boolean checkRateValueValidity(RateValue ratevalue){
-		
-		long diff = (new Date()).getTime() - ratevalue.getDate().getTime();
-		
-		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 1L;
-		
+
+	public Boolean checkRateValueValidity(RateValue ratevalue) {
+		try {
+			long diff = (new Date()).getTime() - ratevalue.getDate().getTime();
+
+			return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 1L;
+
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public RateValue fetchRate(RateCouple rateCouple) {
 
 		try {
-			//TODO: Cleanup
-			InputStream in = new URL("http://api.fixer.io/latest?base=" + rateCouple.getFrom() + "&symbols=" + rateCouple.getTo()).openStream();
+			// TODO: Cleanup
+			InputStream in = new URL(
+					"http://api.fixer.io/latest?base=" + rateCouple.getFrom() + "&symbols=" + rateCouple.getTo())
+							.openStream();
 
 			ObjectMapper mapper = new ObjectMapper();
 			String input = IOUtils.toString(in);
@@ -87,14 +103,19 @@ public class CurrencyConverterCompositeService {
 
 			map = mapper.readValue(input, new TypeReference<Map<String, Object>>() {
 			});
-			
-			LOG.info("Response from rates service: "+map);
 
+			LOG.info("Response from rates service: " + map);
 
-			LOG.info(String.valueOf(((LinkedHashMap<?, ?>) map.get("rates")).get(rateCouple.getTo())));
-			
-			return new RateValue(new Date(),((Number) ((LinkedHashMap<?, ?>) map.get("rates")).get(rateCouple.getTo())).doubleValue());
+			Double rateValue = ((Number) ((LinkedHashMap<?, ?>) map.get("rates")).get(rateCouple.getTo()))
+					.doubleValue();
 
+			LOG.info(rateValue.toString());
+
+			if (Double.isFinite(rateValue))
+				return new RateValue(new Date(), rateValue);
+			else {
+				return null;
+			}
 
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
