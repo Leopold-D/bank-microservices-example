@@ -1,4 +1,4 @@
-package currencyconverter.model;
+package urlmapper.model;
 
 
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class URLElemCouple {
-	private String queryparam;
-	private String easyReading;
+public class URLElemsIdsCouple {
+	private Long queryparamId;
+	private Long easyReadingId;
 }
