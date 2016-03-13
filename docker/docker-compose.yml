@@ -26,4 +26,9 @@ transactionservice:
    - "8083:8083"
   links:
    - discovery
-   
+urlmapper:
+  image: ldauvergne/urlmapper-microservice
+  ports:
+   - "8082:8082"
+  links:
+   - discovery

@@ -14,6 +14,7 @@
 		<module>helloworld-microservice</module>
 		<module>currencyconverter-microservice</module>
 		<module>transactionservice-microservice</module>
+		<module>urlmapper-microservice</module>
 	</modules>
 
 	<parent>

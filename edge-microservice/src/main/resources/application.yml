@@ -18,6 +18,8 @@ zuul:
       path: /currencyconverter/**
     transactionservice:
       path: /transactionservice/**
+    urlmapper:
+      path: /urlmapper/**
 
 server:
   port: 8765
