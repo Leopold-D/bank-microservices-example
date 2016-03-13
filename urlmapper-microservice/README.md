@@ -43,11 +43,33 @@ The mapping table doesn’t contain an exact match for it, so the best match wou
 
 - No example base provided (200K entries)
 - No query params number
+- URLs and Query seems inconsistent from a REST PoV
 
 ## Implementation
 
-With no real input file for the DB, loading will be hardcoded : http://localhost:8765/urlmapper/init/
+- With no real input file for the DB, loading will be hardcoded : http://localhost:8765/urlmapper/init/
 
+- "products" will be considered as base, any URL with query param will start by "/products?<param>..."
+
+- The mapper is mapping without knowing if the final string returned can be a valid URL, meaning :
+
+*products  => Fashion*
+*gender=female  => Women*
+*tag=1234  => Shoes*
+*tag=5678  => Boat­Shoes*
+*brand=123  => Adidas*
+
+With this way of doing, we tacle the upper issue : 
+
+*/products?gender=female&tag=1234&tag=5678*
+
+Gives : 
+
+*/Women/Shoes/Boat­Shoes*
+
+Which seems to be correct knowing the fact that BoatShoes is a sub-category of Shoes.
+
+**
 ## Example calls
 
 http://localhost:8765/urlmapper/endpoint/**
