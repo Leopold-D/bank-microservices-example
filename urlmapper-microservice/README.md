@@ -84,6 +84,10 @@ at service level.
 - This is a PoC !
 - Tests are missing
 
+## Video
+
+[URL Mapper Example](http://youtu.be/MZZW0rFk1Rc?hd=1)
+
 ## Example calls
 
 http://localhost:8765/urlmapper/endpoint/**

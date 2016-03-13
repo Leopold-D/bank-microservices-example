@@ -35,12 +35,6 @@ public class UrlMapperCompositeService {
 
 	BidiMap url_objects = new DualHashBidiMap();
 
-	// BidiMap query = new DualHashBidiMap();
-
-	/*
-	 * Map<Long,URLElement> easy = new HashMap<Long,URLElement>();
-	 * Map<Long,URLElement> query = new HashMap<Long,URLElement>();
-	 */
 	@RequestMapping("/")
 	public String mHello() {
 		return "{\"timestamp\":\"" + new Date() + "\",\"content\":\"Hello from URL Mapper Service\"}";
@@ -71,8 +65,6 @@ public class UrlMapperCompositeService {
 
 	private String mGetTypeAndProcess(HttpServletRequest request) {
 		Map<String, String[]> queryParams = request.getParameterMap();
-
-		// Multimap<Long, String> lURLCode = ArrayListMultimap.create();
 
 		StringBuilder tmp = new StringBuilder();
 
