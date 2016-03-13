@@ -5,6 +5,7 @@
 Our website is using speaking URLs to give users and bots a good impression of what 
 the page is about, e.g. 
 ● http://www.choucroute.com/Clothing/Women/ 
+
 ● http://www.choucroute.com/Boat­Shoes/ 
  
 All these combinations are mapped in a table with the following format: 
@@ -90,4 +91,8 @@ at service level.
 
 ## Example calls
 
-http://localhost:8765/urlmapper/endpoint/**
+http://localhost:8765/urlmapper/endpoint/** - ** Being the task url
+
+http://localhost:8765/urlmapper/init - Loads with 4 values
+http://localhost:8765/urlmapper/init200K - Loads with 1 000 005 values
+http://localhost:8765/urlmapper/size - Give the dataset size

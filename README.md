@@ -41,7 +41,7 @@ Each microservice will coordinate with Eureka to retrieve API routes for the ent
 
 ## URL Lookup
 
-[URL Lookup](https://github.com/Leopold-D/microservices-example/tree/master/transactionservice-microservice/README.md)
+[URL Lookup](https://github.com/Leopold-D/microservices-example/tree/master/urlmapper-microservice/README.md)
 
 # References
 
