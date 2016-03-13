@@ -83,3 +83,11 @@ GET /transactionservice/types/cars => [10]
 GET /transactionservice/sum/10 => {"sum":15000} 
 
 GET /transactionservice/sum/11 => {"sum":10000}
+
+## Example calls
+
+See CURL_EXAMPLES file
+
+## Tests
+
+Tests are contained in Test_SOAPUI.xml file. This implies you to have a proper SOAPUI setup working.

@@ -76,6 +76,9 @@ public class TransactionServiceCompositeService {
 	 */
 	@RequestMapping(value = "/types/{type}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Collection<Long>> mGetTransactionsForType(@PathVariable("type") String type) {
+		if(types.get(type)==null){
+			return util.createResponse(null, HttpStatus.BAD_REQUEST);
+		}
 		return util.createResponse(types.get(type), HttpStatus.OK);
 	}
 
