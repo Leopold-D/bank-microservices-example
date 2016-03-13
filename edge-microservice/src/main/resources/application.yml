@@ -16,6 +16,8 @@ zuul:
       path: /helloworld/**
     currencyconverter:
       path: /currencyconverter/**
+    transactionservice:
+      path: /transactionservice/**
 
 server:
   port: 8765

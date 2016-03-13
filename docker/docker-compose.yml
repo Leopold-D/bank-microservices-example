@@ -20,3 +20,10 @@ currencyconverter:
    - "8081:8081"
   links:
    - discovery
+transactionservice:
+  image: ldauvergne/transactionservice-microservice
+  ports:
+   - "8083:8083"
+  links:
+   - discovery
+   
