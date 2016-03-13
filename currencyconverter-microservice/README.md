@@ -21,3 +21,6 @@ http://localhost:8765/currencyconverter/rates?from=<currency_from>&to=<currency_
 ## Video
 
 [Currency Converter Example](https://www.youtube.com/watch?v=3B1OduROSfg)
+
+## Known issues
+- For some reasons if the Rates API is slow, the service gives up before getting the data, retrying solves the issue
