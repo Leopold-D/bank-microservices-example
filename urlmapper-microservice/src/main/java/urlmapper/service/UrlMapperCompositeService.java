@@ -48,7 +48,7 @@ public class UrlMapperCompositeService {
 
 	@RequestMapping(value = "/endpoint/**", method = RequestMethod.GET)
 	public ResponseEntity<String> mGetMapping(HttpServletRequest request) {
-
+		Date date1 = new Date();
 		String restOfTheUrl = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 
 		LOG.info(restOfTheUrl);
@@ -58,10 +58,12 @@ public class UrlMapperCompositeService {
 			return util.createOkResponse(mHello());
 		} else {
 			String out = mGetTypeAndProcess(request);
+			
 			if (out.contains("null")) {
 				return util.createResponse("URL NOT VALID",HttpStatus.BAD_REQUEST);
 			} else {
-				return util.createOkResponse(out);
+				Date date2 = new Date();
+				return util.createOkResponse("Response time : " + (date2.getTime()-date1.getTime()) + " ms, URL: "+out);
 			}
 
 		}
@@ -85,6 +87,7 @@ public class UrlMapperCompositeService {
 			strings = strings.subList(2, strings.size());
 
 			if (strings.size() == 1) {
+				tmp.append("/");
 				tmp.append(url_objects.get(BASE));
 				return tmp.toString();
 			}
