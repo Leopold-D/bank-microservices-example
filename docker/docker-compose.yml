@@ -14,3 +14,9 @@ helloworld:
    - "8080:8080"
   links:
    - discovery
+currencyconverter:
+  image: ldauvergne/currencyconverter-microservice
+  ports:
+   - "8081:8081"
+  links:
+   - discovery

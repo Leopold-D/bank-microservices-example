@@ -7,6 +7,6 @@ endpoints:
     enabled: true
   health:
     sensitive: false
-eureka:
-  instance:
-    hostname: discovery
+security:
+  basic:
+    enabled: false

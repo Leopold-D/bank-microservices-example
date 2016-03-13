@@ -12,6 +12,7 @@
 		<module>discovery-microservice</module>
 		<module>edge-microservice</module>
 		<module>helloworld-microservice</module>
+		<module>currencyconverter-microservice</module>
 	</modules>
 
     <parent>

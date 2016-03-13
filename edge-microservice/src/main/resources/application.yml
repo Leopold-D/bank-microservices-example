@@ -14,10 +14,16 @@ zuul:
   routes:
     helloworld:
       path: /helloworld/**
+    currencyconverter:
+      path: /currencyconverter/**
 
 server:
   port: 8765
-
+  
+security:
+  basic:
+    enabled: false
+    
 logging:
   level:
     ROOT: INFO
