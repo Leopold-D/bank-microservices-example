@@ -1,0 +1,22 @@
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":2.5,"type":"bouffe" }' http://localhost:8765/transactionservice/transaction/1
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":2.5,"type":"clothes" }' http://localhost:8765/transactionservice/transaction/2
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":2,"type":"clothes","parent_id":2 }' http://localhost:8765/transactionservice/transaction/3
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":232.968563,"type":"clothes","parent_id":3 }' http://localhost:8765/transactionservice/transaction/4
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":2.5,"type":"hobbies" }' http://localhost:8765/transactionservice/transaction/1
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"amount":2.5,"type":"hobbies" }' http://localhost:8765/transactionservice/transaction/5
+
+
+
+
+curl -X GET http://localhost:8765/transactionservice/transaction/1
+
+curl -X GET http://localhost:8765/transactionservice/types/clothes
+
+curl -X GET http://localhost:8765/transactionservice/sum/4
+
+
