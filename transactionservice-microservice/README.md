@@ -86,8 +86,19 @@ GET /transactionservice/sum/11 => {"sum":10000}
 
 ## Example calls
 
-See CURL_EXAMPLES file
+See CURL_REQUESTS file
 
 ## Tests
 
 Tests are contained in Test_SOAPUI.xml file. This implies you to have a proper SOAPUI setup working.
+
+## Video
+
+[Transaction Service Showcase](http://youtu.be/pIbaTdcxXRE?hd=1)
+
+## Notice
+
+- Endpoint is unsecured
+- Code should be optimised for prod
+- This is a PoC !
+- Tests should be more exhaustive
