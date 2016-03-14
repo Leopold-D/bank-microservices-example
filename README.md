@@ -12,7 +12,9 @@ Demonstrated concepts:
 Base URLs:
 
 http://localhost:8765/helloworld/
+
 http://localhost:8765/currencyconverter/
+
 http://localhost:8765/transactionservice/
 
 ## Docker
@@ -42,6 +44,24 @@ Each microservice will coordinate with Eureka to retrieve API routes for the ent
 ## URL Lookup
 
 [URL Lookup](https://github.com/Leopold-D/microservices-example/tree/master/urlmapper-microservice/README.md)
+
+# Build and deployment
+
+## Requirements : 
+
+- Java8
+
+- Maven
+
+- Docker & docker-compose
+
+## Build
+
+*mvn clean install* in the root folder
+
+## Deployment
+
+*cd ./docker* & *docker-compose up* services should then be accessible on the edge server URL (localhost:8765)
 
 # References
 
