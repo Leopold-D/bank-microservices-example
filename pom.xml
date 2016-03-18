@@ -11,10 +11,12 @@
 	<modules>
 		<module>discovery-microservice</module>
 		<module>edge-microservice</module>
-		<module>helloworld-microservice</module>
-		<module>currencyconverter-microservice</module>
-		<module>transactionservice-microservice</module>
-		<module>urlmapper-microservice</module>
+		<module>garage/garage-shared</module>
+		<module>garage/garage-api-microservice</module>
+		<module>garage/garage-core-microservice</module>
+		<!-- <module>helloworld-microservice</module> <module>currencyconverter-microservice</module> 
+			<module>transactionservice-microservice</module> <module>urlmapper-microservice</module> -->
+
 	</modules>
 
 	<parent>
@@ -22,7 +24,6 @@
 		<artifactId>spring-cloud-starter-parent</artifactId>
 		<version>Brixton.M4</version>
 		<relativePath />
-		<!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -60,6 +61,10 @@
 	</dependencyManagement>
 
 	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file://${user.home}/.m2/repository</url>
+		</repository>
 		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>

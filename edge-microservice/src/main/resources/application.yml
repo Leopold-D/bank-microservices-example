@@ -20,6 +20,8 @@ zuul:
       path: /transactionservice/**
     urlmapper:
       path: /urlmapper/**
+    garage-api:
+      path: /garage/**
 
 server:
   port: 8765
