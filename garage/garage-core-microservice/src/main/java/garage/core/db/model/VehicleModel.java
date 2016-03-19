@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * This is a model
  * @author Leopold Dauvergne
- *
+ * Does not use coding rules
  */
 @Data
 @AllArgsConstructor

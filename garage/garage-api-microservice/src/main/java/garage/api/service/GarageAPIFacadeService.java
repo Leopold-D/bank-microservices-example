@@ -25,26 +25,30 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import garage.api.utils.Util;
-
+/**
+ * 
+ * @author Leopold Dauvergne
+ *
+ */
 @RestController
 @RequestMapping("api")
 public class GarageAPIFacadeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GarageAPIFacadeService.class);
 
-	// TODO: Optimisz for prod
+	// TODO: Optimize for prod
 	private static final String CORE_SERVICE_URL = "http://garage-core/core/";
 
 	@Autowired
-	Util util;
+	Util aUtil;
 
 	@Autowired
 	@LoadBalanced
-	private RestTemplate restTemplate;
+	private RestTemplate aRestTemplate;
 
 	@RequestMapping("/")
 	public String mHello() {
-		String lCoreHello = restTemplate.getForObject(CORE_SERVICE_URL, String.class);
+		String lCoreHello = aRestTemplate.getForObject(CORE_SERVICE_URL, String.class);
 		return "{\"timestamp\":\"" + new Date() + "\",\"content\":\"Hello from Garage API Service\"}" + "<br>"
 				+ lCoreHello;
 	}
@@ -53,11 +57,11 @@ public class GarageAPIFacadeService {
 	 * Vehicle enters
 	 * 
 	 * @param registration_id
-	 * @param vehicle
+	 * @param pVehicle
 	 * @return
 	 */
 	@RequestMapping(value = "/clients/gate", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Object> mEnter(@RequestBody VehicleDto vehicle) {
+	public ResponseEntity<Object> mEnter(@RequestBody VehicleDto pVehicle) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -65,32 +69,32 @@ public class GarageAPIFacadeService {
 		/*
 		 * Contacting core service
 		 */
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		lHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<VehicleDto> entity = new HttpEntity<VehicleDto>(vehicle, headers);
+		HttpEntity<VehicleDto> lEntity = new HttpEntity<VehicleDto>(pVehicle, lHeaders);
 
 		try {
-			ResponseEntity<Object> result = restTemplate.exchange(CORE_SERVICE_URL + "/clients/gate", HttpMethod.POST,
-					entity, Object.class);
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/gate", HttpMethod.POST,
+					lEntity, Object.class);
 			/*
 			 * Last filtering possible here
 			 */
-			return result;
+			return lResult;
 		} catch (HttpClientErrorException e) {
-			return util.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param registration_id
+	 * @param pRegistration_id
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/gate/{registration_id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<Object> mExit(@PathVariable("registration_id") String registration_id) {
+	@RequestMapping(value = "/clients/gate/{pRegistration_id}", method = RequestMethod.DELETE, produces = "application/json")
+	public ResponseEntity<Object> mExit(@PathVariable("pRegistration_id") String pRegistration_id) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -99,25 +103,25 @@ public class GarageAPIFacadeService {
 		 * Contacting core service
 		 */
 		try {
-			ResponseEntity<Object> result = restTemplate.exchange(CORE_SERVICE_URL + "/clients/gate/" + registration_id,
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/gate/" + pRegistration_id,
 					HttpMethod.DELETE, new HttpEntity<Object>(null, null), Object.class);
 			/*
 			 * Last filtering possible here
 			 */
-			return result;
+			return lResult;
 		} catch (HttpClientErrorException e) {
-			return util.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param registration_id
+	 * @param pRegistration_id
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/find/{registration_id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<Object> mFind(@PathVariable("registration_id") String registration_id) {
+	@RequestMapping(value = "/clients/find/{pRegistration_id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Object> mFind(@PathVariable("pRegistration_id") String pRegistration_id) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -125,17 +129,17 @@ public class GarageAPIFacadeService {
 		/*
 		 * Contacting core service
 		 */
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		try {
-			ResponseEntity<Object> result = restTemplate.exchange(CORE_SERVICE_URL + "/clients/find/" + registration_id,
-					HttpMethod.GET, new HttpEntity<Object>(null, headers), Object.class);
+			ResponseEntity<Object> result = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/find/" + pRegistration_id,
+					HttpMethod.GET, new HttpEntity<Object>(null, lHeaders), Object.class);
 			/*
 			 * Last filtering possible here
 			 */
 			return result;
 		} catch (HttpClientErrorException e) {
-			return util.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -153,48 +157,48 @@ public class GarageAPIFacadeService {
 		/*
 		 * Contacting core service
 		 */
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		lHeaders.setContentType(MediaType.APPLICATION_JSON);
 		try {
-			ResponseEntity<Object> result = restTemplate.exchange(CORE_SERVICE_URL + "/management/status",
-					HttpMethod.GET, new HttpEntity<Object>(null, headers), Object.class);
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/management/status",
+					HttpMethod.GET, new HttpEntity<Object>(null, lHeaders), Object.class);
 			/*
 			 * Last filtering possible here
 			 */
-			return result;
+			return lResult;
 		} catch (HttpClientErrorException e) {
-			return util.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
 	/**
 	 * Build garage
 	 * 
-	 * @param garage_levels
+	 * @param lGarageLevels
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> mBuild(@RequestBody GarageLevelDto[] garage_levels) {
+	public ResponseEntity<String> mBuild(@RequestBody GarageLevelDto[] lGarageLevels) {
 		/*
 		 * Should be checking Authentication here
 		 */
 		/*
 		 * Contacting core service
 		 */
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<GarageLevelDto[]> entity = new HttpEntity<GarageLevelDto[]>(garage_levels, headers);
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		lHeaders.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<GarageLevelDto[]> lEntity = new HttpEntity<GarageLevelDto[]>(lGarageLevels, lHeaders);
 		try {
-			ResponseEntity<String> result = restTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
-					HttpMethod.POST, entity, String.class);
+			ResponseEntity<String> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
+					HttpMethod.POST, lEntity, String.class);
 			/*
 			 * Last filtering possible here
 			 */
-			return result;
+			return lResult;
 		} catch (HttpClientErrorException e) {
-			return util.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -209,12 +213,12 @@ public class GarageAPIFacadeService {
 		/*
 		 * Should be checking Authentication here
 		 */
-		ResponseEntity<Object> result = restTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
+		ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
 				HttpMethod.DELETE, new HttpEntity<Object>(null, null), Object.class);
 		/*
 		 * Last filtering possible here
 		 */
-		return result;
+		return lResult;
 	}
 
 	/**
@@ -224,11 +228,29 @@ public class GarageAPIFacadeService {
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelWrapperDto level) {
+	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelDto level) {
 		/*
 		 * Should be checking Authentication here
 		 */
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+		/*
+		 * Contacting core service
+		 */
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		lHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<GarageLevelDto> lEntity = new HttpEntity<GarageLevelDto>(level, lHeaders);
+
+		try {
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/level",
+					HttpMethod.POST, lEntity, Object.class);
+			/*
+			 * Last filtering possible here
+			 */
+			return lResult;
+		} catch (HttpClientErrorException e) {
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+		}
 	}
 
 	/**
@@ -238,12 +260,31 @@ public class GarageAPIFacadeService {
 	 * @param level
 	 * @return
 	 */
-	@RequestMapping(value = "/admin/build/level", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<Object> mModifyLevel(@RequestBody GarageLevelWrapperDto level) {
+	@RequestMapping(value = "/admin/build/level/{level_id}", method = RequestMethod.PUT, consumes = "application/json")
+	public ResponseEntity<Object> mModifyLevel(@PathVariable("level_id") Long level_id,
+			@RequestBody GarageLevelDto level) {
 		/*
 		 * Should be checking Authentication here
 		 */
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+		/*
+		 * Contacting core service
+		 */
+		HttpHeaders lHeaders = new HttpHeaders();
+		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		lHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<GarageLevelDto> lEntity = new HttpEntity<GarageLevelDto>(level, lHeaders);
+
+		try {
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/level/" + level_id,
+					HttpMethod.PUT, lEntity, Object.class);
+			/*
+			 * Last filtering possible here
+			 */
+			return lResult;
+		} catch (HttpClientErrorException e) {
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+		}
 	}
 
 	/**
@@ -257,7 +298,22 @@ public class GarageAPIFacadeService {
 		/*
 		 * Should be checking Authentication here
 		 */
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+		/*
+		 * Contacting core service
+		 */
+		HttpHeaders lHeaders = new HttpHeaders();
+		HttpEntity<Object> lEntity = new HttpEntity<Object>(null, lHeaders);
+
+		try {
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/level",
+					HttpMethod.DELETE, lEntity, Object.class);
+			/*
+			 * Last filtering possible here
+			 */
+			return lResult;
+		} catch (HttpClientErrorException e) {
+			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+		}
 	}
 
 }

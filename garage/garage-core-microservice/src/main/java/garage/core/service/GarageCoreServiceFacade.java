@@ -2,13 +2,10 @@ package garage.core.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.ldauvergne.garage.shared.dto.clients.VehicleDto;
 import org.ldauvergne.garage.shared.dto.structure.GarageLevelDto;
-import org.ldauvergne.garage.shared.dto.structure.GarageLotDto;
 import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelWrapperDto;
 import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelsWrapperDto;
 import org.ldauvergne.garage.shared.dto.wrappers.VehicleWrapperDto;
@@ -27,23 +24,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import garage.core.db.model.LevelModel;
 import garage.core.db.model.VehicleModel;
-import garage.core.db.service.GarageCoreService;
-import garage.core.service.classes.LotModel;
+import garage.core.service.model.LotModel;
 import garage.core.util.Util;
 
+/**
+ * 
+ * @author Leopold Dauvergne
+ *
+ */
+// Not be enough to be splitted in 2 classes
 @RestController
 @RequestMapping("core")
 @Configuration
 @ComponentScan("org.ldauvergne.garage.core.service")
 public class GarageCoreServiceFacade {
-
 	private static final Logger LOG = LoggerFactory.getLogger(GarageCoreServiceFacade.class);
 
 	@Autowired
-	Util util;
+	Util aUtil;
 
 	@Autowired
-	GarageCoreService garageCoreService;
+	GarageCoreServiceTools aGarageCoreService;
 
 	@RequestMapping("/")
 	public String mHello() {
@@ -54,71 +55,72 @@ public class GarageCoreServiceFacade {
 	 * Vehicle enters
 	 * 
 	 * @param registration_id
-	 * @param vehicle
+	 * @param pVehicle
 	 * @return
 	 */
 	@RequestMapping(value = "/clients/gate", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Object> mEnter(@RequestBody VehicleDto vehicle) {
+	public ResponseEntity<Object> mEnter(@RequestBody VehicleDto pVehicle) {
 
 		LOG.info("Checking if Vehicle Plate is valid");
-		if (!garageCoreService.mHasValidPlate(vehicle.getRegistration_id())) {
-			return util.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
+		if (!aGarageCoreService.mHasValidPlate(pVehicle.getRegistration_id())) {
+			return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
 					HttpStatus.FORBIDDEN);
 		}
 
-		LOG.info("Checking if garage is builded");
-		if (garageCoreService.getDatabaseConnector().getLevels().isEmpty()) {
-			return util.createResponse("Garage not builded yet", HttpStatus.FORBIDDEN);
+		LOG.info("Checking if garage is built");
+		if (aGarageCoreService.getADatabaseConnector().getLevels().isEmpty()) {
+			return aUtil.createResponse("Garage not builded yet", HttpStatus.FORBIDDEN);
 		}
 
 		LOG.info("Checking if vehicle is not inside garage");
-		if (garageCoreService.getDatabaseConnector().findVehicle(vehicle.getRegistration_id()) != null) {
-			return util.createResponse("Vehicle already inside", HttpStatus.FORBIDDEN);
+		if (aGarageCoreService.getADatabaseConnector().getVehicle(pVehicle.getRegistration_id()) != null) {
+			return aUtil.createResponse("Vehicle already inside", HttpStatus.FORBIDDEN);
 		}
 
 		LOG.info("Checking if not full and getting next free lot");
-		LotModel nextLot = garageCoreService.mFindLot();
-		if (nextLot == null) {
-			return util.createResponse("Garage full", HttpStatus.FORBIDDEN);
+		LotModel lNextLot = aGarageCoreService.mFindLot();
+		if (lNextLot == null) {
+			return aUtil.createResponse("Garage full or not in service", HttpStatus.FORBIDDEN);
 		}
 
 		LOG.info("Parking...");
-		if (!garageCoreService.getDatabaseConnector()
-				.add(new VehicleModel(vehicle.getRegistration_id(), nextLot.getLevel_id(), nextLot.getLot_id(),
-						vehicle.getType(), vehicle.getNbWheels(), vehicle.getBrand()))) {
-			return util.createResponse("Entering garage failed", HttpStatus.FORBIDDEN);
+		if (!aGarageCoreService.getADatabaseConnector()
+				.add(new VehicleModel(pVehicle.getRegistration_id(), lNextLot.getLevel_id(), lNextLot.getLot_id(),
+						pVehicle.getType(), pVehicle.getNbWheels(), pVehicle.getBrand()))) {
+			return aUtil.createResponse("Entering garage failed", HttpStatus.FORBIDDEN);
 		}
 
 		LOG.info("Reading where vehicle parked");
-		VehicleModel lVehicleModel = garageCoreService.getDatabaseConnector().findVehicle(vehicle.getRegistration_id());
+		VehicleModel lVehicleModel = aGarageCoreService.getADatabaseConnector().getVehicle(pVehicle.getRegistration_id());
 
-		return util.createResponse(
-				new VehicleWrapperDto(lVehicleModel.getLevel_id(), lVehicleModel.getLot_id(), vehicle), HttpStatus.OK);
+		return aUtil.createResponse(
+				new VehicleWrapperDto(lVehicleModel.getLevel_id(), lVehicleModel.getLot_id(), pVehicle), HttpStatus.OK);
 	}
 
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param registration_id
+	 * @param pRegistration_id
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/gate/{registration_id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<Object> mExit(@PathVariable("registration_id") String registration_id) {
+	@RequestMapping(value = "/clients/gate/{pRegistration_id}", method = RequestMethod.DELETE, produces = "application/json")
+	public ResponseEntity<Object> mExit(@PathVariable("pRegistration_id") String pRegistration_id) {
 		// Returns the vehicle from the given lot, deleting the lot attribution
 
-		if (!garageCoreService.mHasValidPlate(registration_id.toUpperCase())) {
-			return util.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
+		if (!aGarageCoreService.mHasValidPlate(pRegistration_id.toUpperCase())) {
+			return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
 					HttpStatus.FORBIDDEN);
 		}
 
 		try {
-			if (garageCoreService.getDatabaseConnector().removeVehicle(registration_id.toUpperCase())) {
-				return util.createResponse(null, HttpStatus.OK);
+			if (aGarageCoreService.getADatabaseConnector().removeVehicle(pRegistration_id.toUpperCase())) {
+				// DELETE (rfc2616)
+				return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
 			} else {
-				return util.createResponse("Vehicle not found", HttpStatus.NOT_FOUND);
+				return aUtil.createResponse("Vehicle not found", HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
-			return util.createResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return aUtil.createResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -126,97 +128,86 @@ public class GarageCoreServiceFacade {
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param registration_id
+	 * @param pRegistration_id
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/find/{registration_id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<Object> mFind(@PathVariable("registration_id") String registration_id) {
-
-		if (!garageCoreService.mHasValidPlate(registration_id.toUpperCase())) {
-			return util.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
+	@RequestMapping(value = "/clients/find/{pRegistration_id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Object> mFind(@PathVariable("pRegistration_id") String pRegistration_id) {
+		if (!aGarageCoreService.mHasValidPlate(pRegistration_id.toUpperCase())) {
+			return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
 					HttpStatus.FORBIDDEN);
 		}
-		VehicleModel lVehicle = garageCoreService.getDatabaseConnector().findVehicle(registration_id.toUpperCase());
+		VehicleModel lVehicle = aGarageCoreService.getADatabaseConnector().getVehicle(pRegistration_id.toUpperCase());
 		if (lVehicle != null) {
-			return util.createResponse(new GarageLotDto(lVehicle.getLevel_id(), lVehicle.getLot_id()), HttpStatus.OK);
+			return aUtil
+					.createResponse(
+							new VehicleWrapperDto(lVehicle.getLevel_id(),
+									lVehicle.getLot_id(), new VehicleDto(lVehicle.getRegistration_id(),
+											lVehicle.getType(), lVehicle.getNbWheels(), lVehicle.getBrand())),
+							HttpStatus.OK);
 		} else {
-			return util.createResponse("Vehicle not found", HttpStatus.NOT_FOUND);
+			return aUtil.createResponse("Vehicle not found", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	/**
 	 * Returns garage status
 	 * 
-	 * @param garage
 	 * @return
 	 */
 	@RequestMapping(value = "/management/status", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Object> mGetStatus() {
-
+		// TODO: Rework, too big
 		try {
 
-			GarageLevelsWrapperDto garageLevelsWrapperDto = new GarageLevelsWrapperDto();
+			GarageLevelsWrapperDto pGarageLevelsWrapperDto = new GarageLevelsWrapperDto();
+			pGarageLevelsWrapperDto.setNbLevels(aGarageCoreService.getADatabaseConnector().getLevels().size());
 
-			garageLevelsWrapperDto.setNbLevels(garageCoreService.getDatabaseConnector().getLevels().size());
+			List<GarageLevelWrapperDto> lListGarageLevelWrapperDto = new ArrayList<GarageLevelWrapperDto>();
+			for (LevelModel lLevelModel : aGarageCoreService.getADatabaseConnector().getLevels()) {
+				GarageLevelWrapperDto garageLevelWrapperDto = aGarageCoreService.mWrapLevelModel(lLevelModel);
 
-			for (LevelModel levelModel : garageCoreService.getDatabaseConnector().getLevels()) {
-				GarageLevelWrapperDto garageLevelWrapperDto = new GarageLevelWrapperDto();
+				lListGarageLevelWrapperDto.add(garageLevelWrapperDto);
 
-				garageLevelWrapperDto.setId(levelModel.getId());
-				garageLevelWrapperDto.setLevel(new GarageLevelDto(levelModel.getNbLevelLots()));
-				List<VehicleModel> lVehicleModels = garageCoreService.getDatabaseConnector()
-						.findAllVehicleForLevel(levelModel.getId());
-
-				garageLevelWrapperDto.setNbOccupiedLots(lVehicleModels.size());
-				garageLevelWrapperDto.setNbFreeLots(levelModel.getNbLevelLots() - lVehicleModels.size());
-
-				List<VehicleDto> lVehiclesDto = new ArrayList<VehicleDto>();
-				for (VehicleModel lVehicleModel : lVehicleModels) {
-					lVehiclesDto.add(new VehicleDto(lVehicleModel.getRegistration_id(), lVehicleModel.getType(),
-							lVehicleModel.getNbWheels(), lVehicleModel.getBrand()));
-				}
-				garageLevelWrapperDto.setVehicles(lVehiclesDto);
-
-				// Bug?
-				garageLevelsWrapperDto.getLevels().add(garageLevelWrapperDto);
-
-				garageLevelsWrapperDto
-						.setNbFreeLots(garageLevelsWrapperDto.getNbFreeLots() + garageLevelWrapperDto.getNbFreeLots());
-				garageLevelsWrapperDto.setNbOccupiedLots(
-						garageLevelsWrapperDto.getNbOccupiedLots() + garageLevelWrapperDto.getNbOccupiedLots());
-
+				pGarageLevelsWrapperDto
+						.setNbFreeLots(pGarageLevelsWrapperDto.getNbFreeLots() + garageLevelWrapperDto.getNbFreeLots());
+				pGarageLevelsWrapperDto.setNbOccupiedLots(
+						pGarageLevelsWrapperDto.getNbOccupiedLots() + garageLevelWrapperDto.getNbOccupiedLots());
 			}
-			garageLevelsWrapperDto.setNbTotalLots(
-					garageLevelsWrapperDto.getNbFreeLots() + garageLevelsWrapperDto.getNbOccupiedLots());
-			return util.createResponse(garageLevelsWrapperDto, HttpStatus.OK);
+
+			pGarageLevelsWrapperDto.setLevels(lListGarageLevelWrapperDto);
+
+			pGarageLevelsWrapperDto.setNbTotalLots(
+					pGarageLevelsWrapperDto.getNbFreeLots() + pGarageLevelsWrapperDto.getNbOccupiedLots());
+			return aUtil.createResponse(pGarageLevelsWrapperDto, HttpStatus.OK);
 
 		} catch (Exception e) {
-			return util.createResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return aUtil.createResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	/**
 	 * Build garage
 	 * 
-	 * @param garage_levels
+	 * @param pGarageLevels
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> mBuild(@RequestBody GarageLevelDto[] garage_levels) {
+	public ResponseEntity<String> mBuild(@RequestBody GarageLevelDto[] pGarageLevels) {
 		try {
-			garageCoreService.getDatabaseConnector().clearGarage();
-			garageCoreService.getDatabaseConnector().initGarage();
+			aGarageCoreService.getADatabaseConnector().clearGarage();
+			aGarageCoreService.getADatabaseConnector().initGarage();
 
-			for (GarageLevelDto lGarageLevel : garage_levels) {
+			for (GarageLevelDto lGarageLevel : pGarageLevels) {
 				LOG.info("Creating new level with " + lGarageLevel.getNbLevelLots() + " lots");
-				garageCoreService.getDatabaseConnector()
-						.add(new LevelModel(garageCoreService.getDatabaseConnector().getLevels().size(), true,
-								lGarageLevel.getNbLevelLots()));
+				aGarageCoreService.getADatabaseConnector()
+						.add(new LevelModel(aGarageCoreService.getADatabaseConnector().getLevels().size(),
+								lGarageLevel.isInUse(), lGarageLevel.getNbLevelLots()));
 			}
-
-			return util.createOkResponse(null);
+			// POST (rfc2616)
+			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return util.createResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+			return aUtil.createResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 
 	}
@@ -230,45 +221,89 @@ public class GarageCoreServiceFacade {
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mDeleteGarage() {
 		try {
-			garageCoreService.getDatabaseConnector().clearGarage();
-			return util.createOkResponse(null);
+			aGarageCoreService.getADatabaseConnector().clearGarage();
+			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return util.createResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return aUtil.createResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	/**
 	 * Add a level to the garage
 	 * 
-	 * @param level
+	 * @param pLLevel
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelWrapperDto level) {
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelDto pLLevel) {
+
+		try {
+			aGarageCoreService.getADatabaseConnector().add(new LevelModel(
+					aGarageCoreService.getADatabaseConnector().getLevels().size(), true, pLLevel.getNbLevelLots()));
+			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return aUtil.createResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 
 	/**
 	 * Modify a level in the garage, ie : remotes
 	 * 
-	 * @param level_id
-	 * @param level
+	 * @param pLevelId
+	 * @param pLevelWrapper
 	 * @return
 	 */
-	@RequestMapping(value = "/admin/build/level/{level_id}", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<Object> mModifyLevel(@PathVariable("level_id") Long level_id,
-			@RequestBody GarageLevelWrapperDto level) {
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+	@RequestMapping(value = "/admin/build/level/{pLevelId}", method = RequestMethod.PUT, consumes = "application/json")
+	public ResponseEntity<Object> mModifyLevel(@PathVariable("pLevelId") Integer pLevelId,
+			@RequestBody GarageLevelDto pLevelWrapper) {
+
+		List<VehicleModel> lLevelVehicles = aGarageCoreService.getADatabaseConnector().getAllVehicleForLevel(pLevelId);
+
+		
+		if (pLevelWrapper.getNbLevelLots() < lLevelVehicles.size()) {
+			return aUtil.createResponse("Too many vehicles inside currently the level", HttpStatus.BAD_REQUEST);
+		}
+
+		for (VehicleModel lVehicleModel : lLevelVehicles) {
+			if (lVehicleModel.getLot_id() > pLevelWrapper.getNbLevelLots()) {
+				return aUtil.createResponse("Lots still in use, cannot be reworked", HttpStatus.BAD_REQUEST);
+			}
+		}
+
+		LevelModel lLevelModel = aGarageCoreService.getADatabaseConnector().getLevel(pLevelId);
+		lLevelModel.setInUse(pLevelWrapper.isInUse());
+		lLevelModel.setNbLevelLots(pLevelWrapper.getNbLevelLots());
+
+		if (aGarageCoreService.getADatabaseConnector().modifyLevel(lLevelModel)) {
+			// PUT (rfc2616)
+			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
+		} else {
+			return aUtil.createResponse("Impossible to update level", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 
 	/**
-	 * Delete a level, ie : town hasn't approved to build so high/low !
+	 * Delete a level, ie : town hasn't approved to build so high !
 	 * 
 	 * @param level_id
 	 * @return
 	 */
-	@RequestMapping(value = "/admin/build/level/{level_id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> mDeleteLevel(@PathVariable("level_id") Long level_id) {
-		return util.createResponse(HttpStatus.NOT_IMPLEMENTED.toString(), HttpStatus.NOT_IMPLEMENTED);
+	@RequestMapping(value = "/admin/build/level", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> mDeleteLevel() {
+
+		Integer lLastLevelId = aGarageCoreService.getADatabaseConnector().getLevels().size() - 1;
+
+		List<VehicleModel> lLevelVehicles = aGarageCoreService.getADatabaseConnector()
+				.getAllVehicleForLevel(lLastLevelId);
+
+		// Level must be empty of vehicles
+		if (lLevelVehicles.isEmpty()) {
+			aGarageCoreService.getADatabaseConnector().removeLevel(lLastLevelId);
+			// DELETE (rfc2616)
+			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
+		} else {
+			return aUtil.createResponse("Impossible to delete level,vehicles still in there",
+					HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 }

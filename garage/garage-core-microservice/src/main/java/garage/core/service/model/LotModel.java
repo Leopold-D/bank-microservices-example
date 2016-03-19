@@ -1,4 +1,4 @@
-package garage.core.service.classes;
+package garage.core.service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

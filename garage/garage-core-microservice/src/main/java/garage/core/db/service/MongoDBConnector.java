@@ -17,7 +17,11 @@ import com.mongodb.MongoClientURI;
 import garage.core.db.model.LevelModel;
 import garage.core.db.model.VehicleModel;
 import lombok.Getter;
-
+/**
+ * 
+ * @author Leopold Dauvergne
+ * This class does not comply to the coding rules
+ */
 @Component
 public class MongoDBConnector implements DatabaseConnector {
 
@@ -72,12 +76,12 @@ public class MongoDBConnector implements DatabaseConnector {
 	}
 
 	@Override
-	public List<VehicleModel> findAllVehicleForLevel(Integer level_id) {
+	public List<VehicleModel> getAllVehicleForLevel(Integer level_id) {
 		return mongoOps.find(new Query(where("level_id").is(level_id)), VehicleModel.class);
 	}
 
 	@Override
-	public VehicleModel findVehicle(String registration_id) {
+	public VehicleModel getVehicle(String registration_id) {
 		return mongoOps.findOne(new Query(Criteria.where("_id").is(registration_id)), VehicleModel.class);
 	}
 
@@ -92,7 +96,6 @@ public class MongoDBConnector implements DatabaseConnector {
 	/**
 	 * Level
 	 */
-
 	@Override
 	public boolean add(LevelModel model) {
 		try {
@@ -109,14 +112,24 @@ public class MongoDBConnector implements DatabaseConnector {
 	}
 
 	@Override
-	public LevelModel findLevel(String level_id) {
-		return mongoOps.findOne(new Query(Criteria.where("id").is(level_id)), LevelModel.class);
+	public LevelModel getLevel(Integer level_id) {
+		return mongoOps.findOne(new Query(Criteria.where("_id").is(level_id)), LevelModel.class);
 	}
 
 	@Override
-	public boolean removeLevel(String level_id) {
+	public boolean modifyLevel(LevelModel level) {
 		try {
-			mongoOps.findAndRemove(new Query(Criteria.where("id").is(level_id)), LevelModel.class);
+			mongoOps.save(level);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean removeLevel(Integer level_id) {
+		try {
+			mongoOps.findAndRemove(new Query(Criteria.where("_id").is(level_id)), LevelModel.class);
 			return true;
 		} catch (Exception e) {
 			return false;

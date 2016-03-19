@@ -67,3 +67,13 @@ should be queryable.
 
 - Base API tests are presents, testing @API level. SOAPUI is required to run them
 - Units tests are not yet done, focus has been made on service consistency
+
+## Coding rules
+
+Prepend :
+a for class variables
+p for parameter
+l for local variable
+m for method
+
+CamelCase is used

@@ -2,7 +2,6 @@ package org.ldauvergne.garage.shared.dto.wrappers;
 
 import java.util.List;
 
-import org.ldauvergne.garage.shared.dto.clients.VehicleDto;
 import org.ldauvergne.garage.shared.dto.structure.GarageLevelDto;
 
 import lombok.AllArgsConstructor;
@@ -18,5 +17,5 @@ public class GarageLevelWrapperDto {
 	Integer nbFreeLots;
 
 	GarageLevelDto level;
-	List<VehicleDto> vehicles;
+	List<VehicleWrapperDto> vehicles;
 }
