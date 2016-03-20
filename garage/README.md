@@ -63,6 +63,8 @@ should be queryable.
 
 ## Video
 
+[Garage Video](http://youtu.be/7ezeuhtfY4I?hd=1)
+
 ## Testing
 
 - Base API tests are presents, testing @API level. SOAPUI is required to run them
