@@ -171,6 +171,7 @@ public class GarageCoreServiceFacade {
 
 				pGarageLevelsWrapperDto
 						.setNbFreeLots(pGarageLevelsWrapperDto.getNbFreeLots() + garageLevelWrapperDto.getNbFreeLots());
+				
 				pGarageLevelsWrapperDto.setNbOccupiedLots(
 						pGarageLevelsWrapperDto.getNbOccupiedLots() + garageLevelWrapperDto.getNbOccupiedLots());
 			}

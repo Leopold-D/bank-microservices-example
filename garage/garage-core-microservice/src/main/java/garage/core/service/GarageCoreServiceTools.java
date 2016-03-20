@@ -17,6 +17,7 @@ import garage.core.db.model.VehicleModel;
 import garage.core.db.service.DatabaseConnector;
 import garage.core.service.model.LotModel;
 import lombok.Getter;
+
 /**
  * 
  * @author Leopold Dauvergne
@@ -80,8 +81,12 @@ public class GarageCoreServiceTools {
 		List<VehicleModel> lVehicleModels = aDatabaseConnector.getAllVehicleForLevel(pLevelModel.getId());
 
 		lGarageLevelWrapperDto.setNbOccupiedLots(lVehicleModels.size());
-		lGarageLevelWrapperDto.setNbFreeLots(pLevelModel.getNbLevelLots() - lVehicleModels.size());
-
+		//If level is not in use, then the level has no free lots but occupied lots are still counted in total lots number
+		if (pLevelModel.isInUse()) {
+			lGarageLevelWrapperDto.setNbFreeLots(pLevelModel.getNbLevelLots() - lVehicleModels.size());
+		} else {
+			lGarageLevelWrapperDto.setNbFreeLots(0);
+		}
 		List<VehicleWrapperDto> lVehiclesWrapperDto = new ArrayList<VehicleWrapperDto>();
 
 		for (VehicleModel lVehicleModel : lVehicleModels) {

@@ -41,3 +41,15 @@ Full Swagger Documentation can be visible at this URL when deployed : http://loc
 ## Example calls
 
 Please see SOAP UI test to see example calls
+
+For example, the test "ModifyExtendLevel" gives the following status : 
+
+![ModifyExtendLevel](../tests/ModifyExtendLevel.png)
+
+If we move the check one rank up, it fails expecting no free lot while 1 is available : 
+
+![ModifyExtendLevel2](../tests/ModifyExtendLevel2.png)
+
+If a level is deactivated but cars are still present, their lot will be counted in the total lot number until they exit, then the previously occupied lot will not be counted in the total number of lots anymore.
+
+![DesactivateThenAddLevel](../tests/DesactivateThenAddLevel.png)
