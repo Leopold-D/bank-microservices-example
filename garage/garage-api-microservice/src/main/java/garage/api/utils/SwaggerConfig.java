@@ -1,4 +1,4 @@
-package garage.api.service;
+package garage.api.utils;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 

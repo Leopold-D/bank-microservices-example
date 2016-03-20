@@ -22,7 +22,7 @@ This service is the exposed API facade for the Garage Project, it takes the clie
 {[/error]}
 ]}
 
-Full Swagger Documentation can be visible here : http://localhost:8765/garage/swagger-ui.html#/
+Full Swagger Documentation can be visible at this URL when deployed : http://localhost:8765/garage/swagger-ui.html#/
 
 ## Example calls
 

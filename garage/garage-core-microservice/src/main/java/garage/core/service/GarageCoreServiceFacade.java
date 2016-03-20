@@ -155,7 +155,7 @@ public class GarageCoreServiceFacade {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/management/status", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/admin/status", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Object> mGetStatus() {
 		// TODO: Rework, too big
 		try {

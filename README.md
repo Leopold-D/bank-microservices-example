@@ -5,9 +5,8 @@ Demonstrated concepts:
 
 * Integration testing using Docker
 * Service discovery
-* API gateway
-* Helloworld
-* Currency Converter
+* Microservices arch
+* MongoDB as a service
 
 Base URLs:
 
@@ -29,21 +28,9 @@ This project contains two discovery services, one on Netflix Eureka, and the oth
 
 Each microservice will coordinate with Eureka to retrieve API routes for the entire cluster. Using this strategy each microservice in a cluster can be load balanced and exposed through one API gateway. Each service will automatically discover and route API requests to the service that owns the route. This proxying technique is equally helpful when developing user interfaces, as the full API of the platform is available through its own host as a proxy.
 
-## Helloworld
+## Garage
 
-[Helloworld](https://github.com/Leopold-D/microservices-example/tree/master/helloworld-microservice/README.md)
-
-## Currency Converter
-
-[Currency Converter](https://github.com/Leopold-D/microservices-example/tree/master/currencyconverter-microservice/README.md)
-
-## Transaction Service
-
-[Transaction Service](https://github.com/Leopold-D/microservices-example/tree/master/transactionservice-microservice/README.md)
-
-## URL Lookup
-
-[URL Lookup](https://github.com/Leopold-D/microservices-example/tree/master/urlmapper-microservice/README.md)
+[Garage](https://github.com/Leopold-D/microservices-example/blob/garage/garage/README.md)
 
 # Build and deployment
 

@@ -167,7 +167,7 @@ public class GarageAPIFacadeService {
 	@ApiOperation(value = "mGetStatus", nickname = "mGetStatus")
 	@ApiResponses(value = { 
 			@ApiResponse(code = 200, message = "Success", response = GarageLevelsWrapperDto.class)}) 
-	@RequestMapping(value = "/management/status", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/admin/status", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Object> mGetStatus() {
 		/*
 		 * Should be checking Authentication here
@@ -179,7 +179,7 @@ public class GarageAPIFacadeService {
 		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		lHeaders.setContentType(MediaType.APPLICATION_JSON);
 		try {
-			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/management/status",
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/status",
 					HttpMethod.GET, new HttpEntity<Object>(null, lHeaders), Object.class);
 			/*
 			 * Last filtering possible here
