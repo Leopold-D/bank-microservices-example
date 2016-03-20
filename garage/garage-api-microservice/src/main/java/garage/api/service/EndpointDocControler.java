@@ -8,17 +8,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @RestController
 public class EndpointDocControler {
-	private final RequestMappingHandlerMapping aHandlerMapping;
 
 	@Autowired
-	public EndpointDocControler(RequestMappingHandlerMapping handlerMapping) {
-		this.aHandlerMapping = handlerMapping;
-	}
+	private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-	@RequestMapping(value = "/endpointdoc", method = RequestMethod.GET)
-	public void show(Model model) {
-		model.addAttribute("handlerMethods", this.aHandlerMapping.getHandlerMethods());
+	@RequestMapping( value = "/endpoints", method = RequestMethod.GET )
+	public String getEndPointsInView( Model model )
+	{
+	    model.addAttribute( "endPoints", requestMappingHandlerMapping.getHandlerMethods().keySet() );
+	    return model.asMap().toString();
 	}
 }

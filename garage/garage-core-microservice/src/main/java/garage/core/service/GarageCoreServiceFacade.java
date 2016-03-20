@@ -94,7 +94,7 @@ public class GarageCoreServiceFacade {
 		VehicleModel lVehicleModel = aGarageCoreService.getADatabaseConnector().getVehicle(pVehicle.getRegistration_id());
 
 		return aUtil.createResponse(
-				new VehicleWrapperDto(lVehicleModel.getLevel_id(), lVehicleModel.getLot_id(), pVehicle), HttpStatus.OK);
+				new VehicleWrapperDto(lVehicleModel.getLevel_id(), lVehicleModel.getLot_id(), pVehicle), HttpStatus.CREATED);
 	}
 
 	/**
@@ -204,8 +204,7 @@ public class GarageCoreServiceFacade {
 						.add(new LevelModel(aGarageCoreService.getADatabaseConnector().getLevels().size(),
 								lGarageLevel.isInUse(), lGarageLevel.getNbLevelLots()));
 			}
-			// POST (rfc2616)
-			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
+			return aUtil.createResponse(null, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return aUtil.createResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 		}
@@ -240,7 +239,7 @@ public class GarageCoreServiceFacade {
 		try {
 			aGarageCoreService.getADatabaseConnector().add(new LevelModel(
 					aGarageCoreService.getADatabaseConnector().getLevels().size(), true, pLLevel.getNbLevelLots()));
-			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
+			return aUtil.createResponse(null, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return aUtil.createResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 		}
@@ -275,7 +274,6 @@ public class GarageCoreServiceFacade {
 		lLevelModel.setNbLevelLots(pLevelWrapper.getNbLevelLots());
 
 		if (aGarageCoreService.getADatabaseConnector().modifyLevel(lLevelModel)) {
-			// PUT (rfc2616)
 			return aUtil.createResponse(null, HttpStatus.NO_CONTENT);
 		} else {
 			return aUtil.createResponse("Impossible to update level", HttpStatus.UNPROCESSABLE_ENTITY);

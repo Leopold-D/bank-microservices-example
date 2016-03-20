@@ -1,11 +1,14 @@
 package garage.api.service;
-
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.Arrays;
 import java.util.Date;
 
 import org.ldauvergne.garage.shared.dto.clients.VehicleDto;
 import org.ldauvergne.garage.shared.dto.structure.GarageLevelDto;
 import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelWrapperDto;
+import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelsWrapperDto;
+import org.ldauvergne.garage.shared.dto.wrappers.VehicleWrapperDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import garage.api.utils.Util;
+import io.swagger.annotations.ApiOperation;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * 
  * @author Leopold Dauvergne
@@ -46,7 +51,10 @@ public class GarageAPIFacadeService {
 	@LoadBalanced
 	private RestTemplate aRestTemplate;
 
-	@RequestMapping("/")
+	@ApiOperation(value = "mHello", nickname = "mHello")
+    @ApiResponses(value = { 
+            @ApiResponse(code = 200, message = "Success", response = String.class)}) 
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String mHello() {
 		String lCoreHello = aRestTemplate.getForObject(CORE_SERVICE_URL, String.class);
 		return "{\"timestamp\":\"" + new Date() + "\",\"content\":\"Hello from Garage API Service\"}" + "<br>"
@@ -60,6 +68,9 @@ public class GarageAPIFacadeService {
 	 * @param pVehicle
 	 * @return
 	 */
+	@ApiOperation(value = "mEnter", nickname = "mEnter")
+    @ApiResponses(value = { 
+            @ApiResponse(code = 200, message = "Success", response = VehicleWrapperDto.class)}) 
 	@RequestMapping(value = "/clients/gate", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Object> mEnter(@RequestBody VehicleDto pVehicle) {
 		/*
@@ -90,11 +101,12 @@ public class GarageAPIFacadeService {
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param pRegistration_id
+	 * @param pRegistrationId
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/gate/{pRegistration_id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<Object> mExit(@PathVariable("pRegistration_id") String pRegistration_id) {
+	@ApiOperation(value = "mExit", nickname = "mExit")
+	@RequestMapping(value = "/clients/gate/{registration_id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> mExit(@PathVariable("registration_id") String pRegistrationId) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -103,7 +115,7 @@ public class GarageAPIFacadeService {
 		 * Contacting core service
 		 */
 		try {
-			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/gate/" + pRegistration_id,
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/gate/" + pRegistrationId,
 					HttpMethod.DELETE, new HttpEntity<Object>(null, null), Object.class);
 			/*
 			 * Last filtering possible here
@@ -117,11 +129,14 @@ public class GarageAPIFacadeService {
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param pRegistration_id
+	 * @param pRegistrationId
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/find/{pRegistration_id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<Object> mFind(@PathVariable("pRegistration_id") String pRegistration_id) {
+	@ApiOperation(value = "mFind", nickname = "mFind")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Success", response = VehicleWrapperDto.class)}) 
+	@RequestMapping(value = "/clients/find/{registration_id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Object> mFind(@PathVariable("registration_id") String pRegistrationId) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -132,7 +147,7 @@ public class GarageAPIFacadeService {
 		HttpHeaders lHeaders = new HttpHeaders();
 		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		try {
-			ResponseEntity<Object> result = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/find/" + pRegistration_id,
+			ResponseEntity<Object> result = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/find/" + pRegistrationId,
 					HttpMethod.GET, new HttpEntity<Object>(null, lHeaders), Object.class);
 			/*
 			 * Last filtering possible here
@@ -149,6 +164,9 @@ public class GarageAPIFacadeService {
 	 * @param garage
 	 * @return
 	 */
+	@ApiOperation(value = "mGetStatus", nickname = "mGetStatus")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Success", response = GarageLevelsWrapperDto.class)}) 
 	@RequestMapping(value = "/management/status", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Object> mGetStatus() {
 		/*
@@ -178,8 +196,9 @@ public class GarageAPIFacadeService {
 	 * @param lGarageLevels
 	 * @return
 	 */
+	@ApiOperation(value = "mBuild", nickname = "mBuild")
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> mBuild(@RequestBody GarageLevelDto[] lGarageLevels) {
+	public ResponseEntity<Object> mBuild(@RequestBody GarageLevelDto[] lGarageLevels) {
 		/*
 		 * Should be checking Authentication here
 		 */
@@ -191,8 +210,8 @@ public class GarageAPIFacadeService {
 		lHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<GarageLevelDto[]> lEntity = new HttpEntity<GarageLevelDto[]>(lGarageLevels, lHeaders);
 		try {
-			ResponseEntity<String> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
-					HttpMethod.POST, lEntity, String.class);
+			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/admin/build/garage",
+					HttpMethod.POST, lEntity, Object.class);
 			/*
 			 * Last filtering possible here
 			 */
@@ -208,6 +227,7 @@ public class GarageAPIFacadeService {
 	 * @param level_id
 	 * @return
 	 */
+	@ApiOperation(value = "mDeleteGarage", nickname = "mDeleteGarage")
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mDeleteGarage() {
 		/*
@@ -227,6 +247,7 @@ public class GarageAPIFacadeService {
 	 * @param level
 	 * @return
 	 */
+	@ApiOperation(value = "mAddLevel", nickname = "mAddLevel")
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelDto level) {
 		/*
@@ -260,6 +281,9 @@ public class GarageAPIFacadeService {
 	 * @param level
 	 * @return
 	 */
+	@ApiOperation(value = "mModifyLevel", nickname = "mModifyLevel")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 204, message = "No Content")}) 
 	@RequestMapping(value = "/admin/build/level/{level_id}", method = RequestMethod.PUT, consumes = "application/json")
 	public ResponseEntity<Object> mModifyLevel(@PathVariable("level_id") Long level_id,
 			@RequestBody GarageLevelDto level) {
@@ -293,6 +317,7 @@ public class GarageAPIFacadeService {
 	 * @param level_id
 	 * @return
 	 */
+	@ApiOperation(value = "mDeleteLevel", nickname = "mDeleteLevel")
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mDeleteLevel() {
 		/*
