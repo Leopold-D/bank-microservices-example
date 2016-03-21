@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -161,6 +162,7 @@ public class GarageAPIFacadeService {
 	 * @param garage
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mGetStatus", nickname = "mGetStatus")
 	@ApiResponses(value = { 
 			@ApiResponse(code = 200, message = "Success", response = GarageLevelsWrapperDto.class)}) 
@@ -193,6 +195,7 @@ public class GarageAPIFacadeService {
 	 * @param lGarageLevels
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mBuild", nickname = "mBuild")
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<Object> mBuild(@RequestBody GarageLevelDto[] lGarageLevels) {
@@ -224,6 +227,7 @@ public class GarageAPIFacadeService {
 	 * @param level_id
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mDeleteGarage", nickname = "mDeleteGarage")
 	@RequestMapping(value = "/admin/build/garage", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mDeleteGarage() {
@@ -244,6 +248,7 @@ public class GarageAPIFacadeService {
 	 * @param level
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mAddLevel", nickname = "mAddLevel")
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<Object> mAddLevel(@RequestBody GarageLevelDto level) {
@@ -278,6 +283,7 @@ public class GarageAPIFacadeService {
 	 * @param level
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mModifyLevel", nickname = "mModifyLevel")
 	@ApiResponses(value = { 
 			@ApiResponse(code = 204, message = "No Content")}) 
@@ -314,6 +320,7 @@ public class GarageAPIFacadeService {
 	 * @param level_id
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "mDeleteLevel", nickname = "mDeleteLevel")
 	@RequestMapping(value = "/admin/build/level", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mDeleteLevel() {

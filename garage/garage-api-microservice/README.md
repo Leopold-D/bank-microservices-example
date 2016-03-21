@@ -53,3 +53,19 @@ If we move the check one rank up, it fails expecting no free lot while 1 is avai
 If a level is deactivated but cars are still present, their lot will be counted in the total lot number until they exit, then the previously occupied lot will not be counted in the total number of lots anymore.
 
 ![DesactivateThenAddLevel](../tests/DesactivateThenAddLevel.png)
+
+## Security
+
+As for this demo project, the /api/admin/** endpoints are secured with Basic http authentication over http. For a production grade product, it should be at least over https or best using OAuth2.
+
+Example calls:
+
+- curl admin:password@localhost:8765/garage/api/admin/status
+
+Answers: 
+
+{"nbLevels":3,"nbTotalLots":9,"nbOccupiedLots":0,"nbFreeLots":9,"levels":[{"id":0,"nbOccupiedLots":0,"nbFreeLots":3,"level":{"inUse":true,"nbLevelLots":3},"vehicles":[]},{"id":1,"nbOccupiedLots":0,"nbFreeLots":2,"level":{"inUse":true,"nbLevelLots":2},"vehicles":[]},{"id":2,"nbOccupiedLots":0,"nbFreeLots":4,"level":{"inUse":true,"nbLevelLots":4},"vehicles":[]}]}
+
+- curl admin:choucroute@localhost:8765/garage/api/admin/status
+
+{"timestamp":1458584084945,"status":401,"error":"Unauthorized","message":"Bad credentials","path":"/api/admin/status"}
