@@ -11,6 +11,7 @@
 	<modules>
 		<module>discovery-microservice</module>
 		<module>edge-microservice</module>
+		<module>auth-microservice</module>
 		<module>garage/garage-shared</module>
 		<module>garage/garage-api-microservice</module>
 		<module>garage/garage-core-microservice</module>

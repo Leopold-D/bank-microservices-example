@@ -8,6 +8,12 @@ edge:
    - "8765:8765"
   links:
    - discovery
+auth:
+  image: ldauvergne/auth-microservice
+  ports:
+   - "9999:9999"
+  links:
+   - discovery
 #helloworld:
 #  image: ldauvergne/helloworld-microservice
 #  ports:
