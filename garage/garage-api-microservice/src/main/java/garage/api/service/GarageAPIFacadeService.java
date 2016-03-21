@@ -1,12 +1,9 @@
 package garage.api.service;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.Arrays;
 import java.util.Date;
 
 import org.ldauvergne.garage.shared.dto.clients.VehicleDto;
 import org.ldauvergne.garage.shared.dto.structure.GarageLevelDto;
-import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelWrapperDto;
 import org.ldauvergne.garage.shared.dto.wrappers.GarageLevelsWrapperDto;
 import org.ldauvergne.garage.shared.dto.wrappers.VehicleWrapperDto;
 import org.slf4j.Logger;
@@ -16,7 +13,6 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +25,8 @@ import org.springframework.web.client.RestTemplate;
 
 import garage.api.utils.Util;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 /**
  * 
  * @author Leopold Dauvergne
@@ -127,7 +124,7 @@ public class GarageAPIFacadeService {
 	}
 
 	/**
-	 * Vehicle exits
+	 * Find Vehicle
 	 * 
 	 * @param pRegistrationId
 	 * @return

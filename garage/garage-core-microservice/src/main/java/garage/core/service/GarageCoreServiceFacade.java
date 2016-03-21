@@ -126,7 +126,7 @@ public class GarageCoreServiceFacade {
 	}
 
 	/**
-	 * Vehicle exits
+	 * Find Vehicle
 	 * 
 	 * @param pRegistration_id
 	 * @return
