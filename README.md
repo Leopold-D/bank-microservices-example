@@ -10,11 +10,8 @@ Demonstrated concepts:
 
 Base URLs:
 
-http://localhost:8765/helloworld/
+http://localhost:8765/garage/api/
 
-http://localhost:8765/currencyconverter/
-
-http://localhost:8765/transactionservice/
 
 ## Docker
 
