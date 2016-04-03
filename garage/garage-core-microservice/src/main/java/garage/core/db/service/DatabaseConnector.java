@@ -2,16 +2,16 @@ package garage.core.db.service;
 
 import java.util.List;
 
-import garage.core.db.model.LevelModel;
-import garage.core.db.model.VehicleModel;
+import org.ldauvergne.garage.shared.models.LevelModel;
+import org.ldauvergne.garage.shared.models.VehicleModel;
 /**
  * 
  * @author Leopold Dauvergne
- * This Interface does not comply to coding rules
+ * 
  */
 public interface DatabaseConnector {
 
-	boolean add(VehicleModel vehicleModel);
+	void add(VehicleModel vehicleModel);
 	
 	List<VehicleModel> getVehicles();
 	
@@ -19,18 +19,18 @@ public interface DatabaseConnector {
 
 	VehicleModel getVehicle(String registration_id);
 
-	boolean removeVehicle(String registration_id);
+	VehicleModel removeVehicle(String registration_id);
 
-	boolean add(LevelModel model);
+	void add(LevelModel model);
 
 	List<LevelModel> getLevels();
 	
 	LevelModel getLevel(Integer level_id);
 
-	boolean modifyLevel(LevelModel level);
+	void modifyLevel(LevelModel level);
 
-	boolean removeLevel(Integer level_id);
-
+	void removeLevel(Integer level_id);
+	
 	void clearGarage();
 
 	void initGarage();

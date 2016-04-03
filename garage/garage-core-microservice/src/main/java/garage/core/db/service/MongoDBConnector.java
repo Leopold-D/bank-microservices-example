@@ -3,8 +3,12 @@ package garage.core.db.service;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import org.ldauvergne.garage.shared.models.LevelModel;
+import org.ldauvergne.garage.shared.models.VehicleModel;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,27 +18,28 @@ import org.springframework.stereotype.Component;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-import garage.core.db.model.LevelModel;
-import garage.core.db.model.VehicleModel;
 import lombok.Getter;
+
 /**
  * 
  * @author Leopold Dauvergne
- * This class does not comply to the coding rules
+ *
  */
 @Component
 public class MongoDBConnector implements DatabaseConnector {
 
+	private static final String MONGODB_BASE_ADDR = "mongodb://garage_user:garage_pw@ds013579.mlab.com:13579/garage";
+	private static final String MONGODB_BASE_NAME = "garage";
+
 	@Getter
 	private MongoOperations mongoOps;
 
-	// TODO: DB Connection assets in variables
 	public MongoDBConnector() {
 		try {
-			MongoClientURI uri = new MongoClientURI("mongodb://garage_user:garage_pw@ds013579.mlab.com:13579/garage");
+			MongoClientURI uri = new MongoClientURI(MONGODB_BASE_ADDR);
 			MongoClient client = new MongoClient(uri);
 
-			mongoOps = new MongoTemplate(client, "garage");
+			mongoOps = new MongoTemplate(client, MONGODB_BASE_NAME);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -55,19 +60,13 @@ public class MongoDBConnector implements DatabaseConnector {
 		mongoOps.dropCollection(VehicleModel.class);
 	}
 
-	// TODO: Generic methods
 	/**
 	 * Vehicle
 	 */
 
 	@Override
-	public boolean add(VehicleModel model) {
-		try {
-			mongoOps.insert(model);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+	public void add(VehicleModel model) {
+		mongoOps.insert(model);
 	}
 
 	@Override
@@ -86,29 +85,24 @@ public class MongoDBConnector implements DatabaseConnector {
 	}
 
 	@Override
-	public boolean removeVehicle(String registration_id) {
-		if (mongoOps.findAndRemove(new Query(Criteria.where("_id").is(registration_id)), VehicleModel.class) == null) {
-			return false;
-		}
-		return true;
+	public VehicleModel removeVehicle(String registration_id) {
+		return mongoOps.findAndRemove(new Query(Criteria.where("_id").is(registration_id)), VehicleModel.class);
 	}
 
 	/**
 	 * Level
 	 */
 	@Override
-	public boolean add(LevelModel model) {
-		try {
-			mongoOps.insert(model);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+	public void add(LevelModel model) {
+		mongoOps.insert(model);
 	}
 
 	@Override
 	public List<LevelModel> getLevels() {
-		return mongoOps.findAll(LevelModel.class);
+		List<LevelModel> lLevels = mongoOps.findAll(LevelModel.class);
+		// Java8 way of sorting result from MongoDB on level id and not last updated
+		Collections.sort(lLevels, (a, b) -> a.getId() < b.getId() ? -1 : a.getId() == b.getId() ? 0 : 1);
+		return lLevels;
 	}
 
 	@Override
@@ -117,22 +111,20 @@ public class MongoDBConnector implements DatabaseConnector {
 	}
 
 	@Override
-	public boolean modifyLevel(LevelModel level) {
-		try {
-			mongoOps.save(level);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+	public void modifyLevel(LevelModel level) {
+		mongoOps.save(level);
 	}
 
 	@Override
-	public boolean removeLevel(Integer level_id) {
-		try {
-			mongoOps.findAndRemove(new Query(Criteria.where("_id").is(level_id)), LevelModel.class);
-			return true;
-		} catch (Exception e) {
-			return false;
+	public void removeLevel(Integer level_id) {
+		mongoOps.findAndRemove(new Query(Criteria.where("_id").is(level_id)), LevelModel.class);
+	}
+
+	class LevelDtoComparator implements Comparator<LevelModel> {
+		@Override
+		public int compare(LevelModel a, LevelModel b) {
+			return a.getId() < b.getId() ? -1 : a.getId() == b.getId() ? 0 : 1;
 		}
 	}
+
 }
