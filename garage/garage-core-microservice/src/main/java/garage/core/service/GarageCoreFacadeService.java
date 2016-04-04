@@ -57,7 +57,7 @@ public class GarageCoreFacadeService {
 	@RequestMapping(value = "/clients/gate", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Object> mEnter(@RequestBody VehicleModel pVehicle) {
 		try {
-			LOG.info("Vehicle : " +pVehicle.getRegistration_id() + pVehicle.getVehicleType());
+			LOG.info("Vehicle : " +pVehicle.getRegistration_id());
 			LOG.info("Checking if garage is built");
 			if (aGarageCoreService.getADatabaseConnector().getLevels().isEmpty()) {
 				return aUtil.createResponse("Garage not builded yet", HttpStatus.FORBIDDEN);

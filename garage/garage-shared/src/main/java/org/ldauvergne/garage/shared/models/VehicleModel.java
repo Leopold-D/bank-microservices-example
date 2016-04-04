@@ -24,18 +24,17 @@ public class VehicleModel {
 	private Integer lot_id;
 
 	private VehicleType vehicleType = VehicleType.UNDEFINED;
-	private Integer nbWheels;
 	private String brand;
 
 	public VehicleModel(VehicleModel lVehicle) {
 		BeanUtils.copyProperties(lVehicle, this);
 	}
 	
-	public VehicleModel mAddVehicleTypeFromNbWheels() {
-		switch (this.nbWheels) {
-		case VehicleType.MOTORBIKE_NB_WHEELS:
+	public VehicleModel mCheckVehicleType() {
+		switch (this.vehicleType) {
+		case MOTORBIKE:
 			return (new MotorbikeModel(this));
-		case VehicleType.CAR_NB_WHEELS:
+		case CAR:
 			return (new CarModel(this));
 		default:
 			return this;

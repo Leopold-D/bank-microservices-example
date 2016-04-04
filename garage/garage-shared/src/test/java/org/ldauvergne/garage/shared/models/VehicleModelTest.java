@@ -6,17 +6,17 @@ public class VehicleModelTest extends TestCase{
     
     public void testCanCreateVehicleTest()
     {
-    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED, 2, "DUCATI");
+    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED,  "DUCATI");
     	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
     }
     
     public void testCanCreateMotorbike()
     {
-    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED, 2, "DUCATI");
+    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.MOTORBIKE, "DUCATI");
     	
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertTrue(lVehicle instanceof VehicleModel);
     	
-    	lVehicle=lVehicle.mAddVehicleTypeFromNbWheels();
+    	lVehicle=lVehicle.mCheckVehicleType();
     	
     	assertEquals(VehicleType.MOTORBIKE, lVehicle.getVehicleType());
     	
@@ -27,11 +27,11 @@ public class VehicleModelTest extends TestCase{
     {
     	String lVehicleId = "TEST";
 
-    	VehicleModel lVehicle = new VehicleModel(lVehicleId, null, null, VehicleType.UNDEFINED, 4, "PEUGEOT");
+    	VehicleModel lVehicle = new VehicleModel(lVehicleId, null, null, VehicleType.CAR, "PEUGEOT");
 
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertTrue(lVehicle instanceof VehicleModel);
     	
-    	lVehicle=lVehicle.mAddVehicleTypeFromNbWheels();
+    	lVehicle=lVehicle.mCheckVehicleType();
     	
     	assertTrue(lVehicle instanceof CarModel);
     	
@@ -42,11 +42,11 @@ public class VehicleModelTest extends TestCase{
     
     public void testCanCreateUntypedVehicle()
     {
-    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED, 0, "PEUGEOT");
+    	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED, "PEUGEOT");
     	
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertTrue(lVehicle instanceof VehicleModel);
     	
-    	lVehicle=lVehicle.mAddVehicleTypeFromNbWheels();
+    	lVehicle=lVehicle.mCheckVehicleType();
     	
     	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
     	
@@ -59,11 +59,11 @@ public class VehicleModelTest extends TestCase{
 
     	String lVehicleBrand = "PEUGEOT";
     	
-    	VehicleModel lVehicle = new VehicleModel(lVehicleId, null, null, VehicleType.UNDEFINED, 4, lVehicleBrand);
+    	VehicleModel lVehicle = new VehicleModel(lVehicleId, null, null, VehicleType.UNDEFINED, lVehicleBrand);
 
     	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
     	
-    	lVehicle=lVehicle.mAddVehicleTypeFromNbWheels();
+    	lVehicle=lVehicle.mCheckVehicleType();
     	
 		assertEquals(lVehicleId, lVehicle.getRegistration_id());
 		

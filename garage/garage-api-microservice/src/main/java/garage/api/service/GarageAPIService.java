@@ -19,7 +19,7 @@ public class GarageAPIService {
 		}
 
 		// Add proper vehicle type depending of wheels number
-		pVehicle = pVehicle.mAddVehicleTypeFromNbWheels();
+		pVehicle = pVehicle.mCheckVehicleType();
 		return pVehicle;
 	}
 }
