@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+	
+	//OAuth2 is not needed yet as the API is mainly public and no user management is to be implemented
 	@Autowired
 	private LambaUserAuthService userDetailsService;
 

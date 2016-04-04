@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class Util {
-    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+public class APIUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(APIUtils.class);
 
     @Autowired
     private LoadBalancerClient loadBalancer;

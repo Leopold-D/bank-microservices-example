@@ -21,7 +21,7 @@ import lombok.Getter;
  *
  */
 @Component
-public class GarageCoreServiceTools {
+public class GarageCoreService {
 
 	/**
 	 * Wrapping the hard computation
@@ -30,7 +30,7 @@ public class GarageCoreServiceTools {
 	@Getter
 	private DatabaseConnector aDatabaseConnector;
 
-	private static final Logger LOG = LoggerFactory.getLogger(GarageCoreServiceTools.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GarageCoreService.class);
 
 	public LotModel mGetLot(String pVehicleplate) {
 		// Browse through levels
@@ -70,10 +70,6 @@ public class GarageCoreServiceTools {
 		}
 	}
 	
-	public boolean mHasValidPlate(String pVehicleplate) {
-		return pVehicleplate.matches("^[-A-Z0-9]+$");
-	}
-	
 	public void mCreateLevel(LevelModel pGarageLevel) {
 		LOG.info("Creating new level with " + pGarageLevel.getNbLevelLots() + " lots");
 
@@ -88,5 +84,5 @@ public class GarageCoreServiceTools {
 		
 		aDatabaseConnector.add(pGarageLevel);
 	}
-
+	
 }

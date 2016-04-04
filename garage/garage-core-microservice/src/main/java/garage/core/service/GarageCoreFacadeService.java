@@ -33,14 +33,14 @@ import garage.core.util.Util;
 @RequestMapping("core")
 @Configuration
 @ComponentScan("org.ldauvergne.garage.core.service")
-public class GarageCoreServiceFacade {
-	private static final Logger LOG = LoggerFactory.getLogger(GarageCoreServiceFacade.class);
+public class GarageCoreFacadeService {
+	private static final Logger LOG = LoggerFactory.getLogger(GarageCoreFacadeService.class);
 
 	@Autowired
 	Util aUtil;
 
 	@Autowired
-	GarageCoreServiceTools aGarageCoreService;
+	GarageCoreService aGarageCoreService;
 
 	@RequestMapping("/")
 	public String mHello() {
@@ -57,12 +57,7 @@ public class GarageCoreServiceFacade {
 	@RequestMapping(value = "/clients/gate", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Object> mEnter(@RequestBody VehicleModel pVehicle) {
 		try {
-			LOG.info("Checking if Vehicle Plate is valid");
-			if (!aGarageCoreService.mHasValidPlate(pVehicle.getRegistration_id())) {
-				return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
-						HttpStatus.FORBIDDEN);
-			}
-
+			LOG.info("Vehicle : " +pVehicle.getRegistration_id() + pVehicle.getVehicleType());
 			LOG.info("Checking if garage is built");
 			if (aGarageCoreService.getADatabaseConnector().getLevels().isEmpty()) {
 				return aUtil.createResponse("Garage not builded yet", HttpStatus.FORBIDDEN);
@@ -80,10 +75,11 @@ public class GarageCoreServiceFacade {
 			}
 
 			LOG.info("Parking...");
+			pVehicle.setLevel_id(lNextLot.getLevel_id());
+			pVehicle.setLot_id(lNextLot.getId());
+			
+			aGarageCoreService.getADatabaseConnector().add(pVehicle);
 
-			aGarageCoreService.getADatabaseConnector()
-					.add(new VehicleModel(pVehicle.getRegistration_id(), lNextLot.getLevel_id(), lNextLot.getId(),
-							pVehicle.getType(), pVehicle.getNbWheels(), pVehicle.getBrand()));
 
 			LOG.info("Reading where vehicle parked");
 			VehicleModel lVehicleModel = aGarageCoreService.getADatabaseConnector()
@@ -98,19 +94,14 @@ public class GarageCoreServiceFacade {
 	/**
 	 * Vehicle exits
 	 * 
-	 * @param pRegistration_id
+	 * @param pRegistrationId
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/gate/{pRegistration_id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<Object> mExit(@PathVariable("pRegistration_id") String pRegistration_id) {
-
-		if (!aGarageCoreService.mHasValidPlate(pRegistration_id.toUpperCase())) {
-			return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
-					HttpStatus.FORBIDDEN);
-		}
+	@RequestMapping(value = "/clients/gate/{pRegistrationId}", method = RequestMethod.DELETE, produces = "application/json")
+	public ResponseEntity<Object> mExit(@PathVariable("pRegistrationId") String pRegistrationId) {
 
 		try {
-			VehicleModel lVehicle = aGarageCoreService.getADatabaseConnector().removeVehicle(pRegistration_id.toUpperCase());
+			VehicleModel lVehicle = aGarageCoreService.getADatabaseConnector().removeVehicle(pRegistrationId.toUpperCase());
 			//Check if vehicle has well been removed
 			if (lVehicle!=null) {
 				aGarageCoreService.mFreeLot(aGarageCoreService.getADatabaseConnector().getLevel(lVehicle.getLevel_id()), new LotModel(lVehicle.getLot_id(), lVehicle.getLevel_id(), lVehicle.getRegistration_id().toUpperCase()));
@@ -127,18 +118,13 @@ public class GarageCoreServiceFacade {
 	/**
 	 * Find Vehicle
 	 * 
-	 * @param pRegistration_id
+	 * @param pRegistrationId
 	 * @return
 	 */
-	@RequestMapping(value = "/clients/find/{pRegistration_id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<Object> mFind(@PathVariable("pRegistration_id") String pRegistration_id) {
+	@RequestMapping(value = "/clients/find/{pRegistrationId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Object> mFind(@PathVariable("pRegistrationId") String pRegistrationId) {
 
-		if (!aGarageCoreService.mHasValidPlate(pRegistration_id.toUpperCase())) {
-			return aUtil.createResponse("Invalid licence plate, must be matching ^[-A-Z0-9]+$ regex",
-					HttpStatus.FORBIDDEN);
-		}
-		
-		VehicleModel lVehicle = aGarageCoreService.getADatabaseConnector().getVehicle(pRegistration_id.toUpperCase());
+		VehicleModel lVehicle = aGarageCoreService.getADatabaseConnector().getVehicle(pRegistrationId.toUpperCase());
 		if (lVehicle != null) {
 			return aUtil.createResponse(lVehicle, HttpStatus.OK);
 		} else {

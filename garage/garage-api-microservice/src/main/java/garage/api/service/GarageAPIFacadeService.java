@@ -9,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import garage.api.utils.Util;
+import garage.api.utils.APIUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -34,16 +36,19 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("api")
+@ComponentScan("org.ldauvergne.garage.api.service")
 public class GarageAPIFacadeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GarageAPIFacadeService.class);
 
-	// TODO: Optimize for prod
 	private static final String CORE_SERVICE_URL = "http://garage-core/core/";
 
 	@Autowired
-	Util aUtil;
+	APIUtils aAPIUtils;
 
+	@Autowired
+	GarageAPIService aGarageAPIService;
+	
 	@Autowired
 	@LoadBalanced
 	private RestTemplate aRestTemplate;
@@ -72,7 +77,14 @@ public class GarageAPIFacadeService {
 	public ResponseEntity<Object> mEnter(@RequestBody VehicleModel pVehicle) {
 
 		LOG.info("\n\nIncoming Vehicle");
-
+		try {
+			LOG.info("Check Vehicle");
+			pVehicle = aGarageAPIService.mCheckVehicle(pVehicle);
+			LOG.info("Vehicle Type: " + pVehicle.getVehicleType().toString());
+		} catch (Exception e) {
+			return aAPIUtils.createResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 		HttpHeaders lHeaders = new HttpHeaders();
 		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		lHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -85,7 +97,7 @@ public class GarageAPIFacadeService {
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -99,13 +111,19 @@ public class GarageAPIFacadeService {
 	@RequestMapping(value = "/clients/gate/{registration_id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> mExit(@PathVariable("registration_id") String pRegistrationId) {
 
+		LOG.info("Checking if Vehicle Plate is valid");
+		if (!aGarageAPIService.mIsValidPlate(pRegistrationId)) {
+			return aAPIUtils.createResponse(GarageAPIService.INVALID_LICENCE_PLATE_MESSAGE,
+					HttpStatus.FORBIDDEN);
+		}
+		
 		try {
 			ResponseEntity<Object> lResult = aRestTemplate.exchange(CORE_SERVICE_URL + "/clients/gate/" + pRegistrationId,
 					HttpMethod.DELETE, new HttpEntity<Object>(null, null), Object.class);
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -121,6 +139,12 @@ public class GarageAPIFacadeService {
 	@RequestMapping(value = "/clients/find/{registration_id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Object> mFind(@PathVariable("registration_id") String pRegistrationId) {
 
+		LOG.info("Checking if Vehicle Plate is valid");
+		if (!aGarageAPIService.mIsValidPlate(pRegistrationId)) {
+			return aAPIUtils.createResponse(GarageAPIService.INVALID_LICENCE_PLATE_MESSAGE,
+					HttpStatus.FORBIDDEN);
+		}
+		
 		HttpHeaders lHeaders = new HttpHeaders();
 		lHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		try {
@@ -129,7 +153,7 @@ public class GarageAPIFacadeService {
 
 			return result;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -155,7 +179,7 @@ public class GarageAPIFacadeService {
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -180,7 +204,7 @@ public class GarageAPIFacadeService {
 					HttpMethod.POST, lEntity, Object.class);
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -224,7 +248,7 @@ public class GarageAPIFacadeService {
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -255,7 +279,7 @@ public class GarageAPIFacadeService {
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
@@ -279,7 +303,7 @@ public class GarageAPIFacadeService {
 
 			return lResult;
 		} catch (HttpClientErrorException e) {
-			return aUtil.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
+			return aAPIUtils.createResponse(e.getResponseBodyAsString(), e.getStatusCode());
 		}
 	}
 
