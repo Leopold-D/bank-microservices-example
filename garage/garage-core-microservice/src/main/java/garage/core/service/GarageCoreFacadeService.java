@@ -236,9 +236,6 @@ public class GarageCoreFacadeService {
 			lLevelModel.setInUse(pLevel.isInUse());
 			lLevelModel.setNbLevelLots(pLevel.getNbLevelLots());
 
-			
-			
-			
 			// Scale up
 			for (int i = lLevelModel.getOccupiedLots().size()+lLevelModel.getFreeLots().size(); i < lLevelModel.getNbLevelLots(); i++) {
 				lLevelModel.getFreeLots().add(new LotModel(i, lLevelModel.getId(), null));

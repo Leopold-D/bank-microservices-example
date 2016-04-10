@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.ldauvergne.garage.shared.models.LevelModel;
 import org.ldauvergne.garage.shared.models.VehicleModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -31,6 +33,8 @@ public class MongoDBConnector implements DatabaseConnector {
 	private static final String MONGODB_BASE_ADDR = "mongodb://garage_user:garage_pw@ds013579.mlab.com:13579/garage";
 	private static final String MONGODB_BASE_NAME = "garage";
 
+	private static final Logger LOG = LoggerFactory.getLogger(MongoDBConnector.class);
+	
 	@Getter
 	private MongoOperations mongoOps;
 
@@ -41,7 +45,7 @@ public class MongoDBConnector implements DatabaseConnector {
 
 			mongoOps = new MongoTemplate(client, MONGODB_BASE_NAME);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 
 		clearGarage();
