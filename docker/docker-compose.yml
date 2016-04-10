@@ -8,30 +8,20 @@ edge:
    - "8765:8765"
   links:
    - discovery
-#helloworld:
-#  image: ldauvergne/helloworld-microservice
-#  ports:
-#   - "8080:8080"
-#  links:
-#   - discovery
-#currencyconverter:
-#  image: ldauvergne/currencyconverter-microservice
-#  ports:
-#   - "8081:8081"
-#  links:
-#   - discovery
-#transactionservice:
-#  image: ldauvergne/transactionservice-microservice
-#  ports:
-#   - "8082:8082"
-#  links:
-#   - discovery
-#urlmapper:
-#  image: ldauvergne/urlmapper-microservice
-#  ports:
-#   - "8083:8083"
-#  links:
-#   - discovery
+authentication:
+  image: ldauvergne/authentication-microservice
+  ports:
+   - "9999:9999"
+  links:
+   - discovery
+garage-admin-api:
+  image: ldauvergne/garage-admin-api-microservice
+  ports:
+   - "8083:8083"
+  links:
+   - discovery
+   - garage-core
+   - authentication
 garage-api:
   image: ldauvergne/garage-api-microservice
   ports:
@@ -39,9 +29,11 @@ garage-api:
   links:
    - discovery
    - garage-core
+   - authentication
 garage-core:
   image: ldauvergne/garage-core-microservice
   ports:
    - "8085:8085"
   links:
    - discovery
+   - authentication

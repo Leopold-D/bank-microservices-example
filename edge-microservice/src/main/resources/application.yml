@@ -8,27 +8,18 @@ endpoints:
     enabled: true
   health:
     sensitive: false
-
+      
 zuul:
   ignoredServices: "*"
   routes:
-    helloworld:
-      path: /helloworld/**
-    currencyconverter:
-      path: /currencyconverter/**
-    transactionservice:
-      path: /transactionservice/**
-    urlmapper:
-      path: /urlmapper/**
+    garage-admin-api:
+      path: /garage/api/admin/**
     garage-api:
-      path: /garage/**
+      path: /garage/api/**
 
+      
 server:
   port: 8765
-  
-security:
-  basic:
-    enabled: false
     
 logging:
   level:
