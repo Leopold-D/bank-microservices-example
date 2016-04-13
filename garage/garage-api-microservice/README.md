@@ -38,6 +38,31 @@ This service is the exposed API facade for the Garage Project, it takes the clie
 
 Full Swagger Documentation can be visible at this URL when deployed : http://localhost:8765/garage/swagger-ui.html#/
 
+## Security
+
+As for this demo project, the /api/admin/** endpoints are secured with OAuth2 authentication, you need a valid Token to access the service. The OAuth2 workflows have not all been implemented at a state of the art level as it's out of scope for the current task.
+
+The Auth service supports the following workflows : Authorization Code Grant, Implicit Grant, Resource Owner Password Credentials Grant, Client Credentials Grant.
+
+Validated call to get a token from the auth service is : 
+
+- Resource Owner Password Credentials Grant
+
+''curl -s acme:acmesecret@localhost:9999/uaa/oauth/token  \
+ -d grant_type=password \
+ -d client_id=acme \
+ -d scope=management \
+ -d username=user \
+ -d password=password | jq .''
+
+- Implicit Grant
+
+''http://localhost:9999/uaa/oauth/authorize? response_type=token& client_id=acme& redirect_uri=http://example.com& scope=management& state=65452''
+
+## Documentation
+
+Accessible at http://localhost:8765/garage/api/swagger-ui.html#/ and http://localhost:8765/garage/api/admin/swagger-ui.html#/ (Auth required) once properly deployed.
+
 ## Example calls
 
 Please see SOAP UI test to see example calls
@@ -54,18 +79,70 @@ If a level is deactivated but cars are still present, their lot will be counted 
 
 ![DesactivateThenAddLevel](../tests/DesactivateThenAddLevel.png)
 
-## Security
-
-As for this demo project, the /api/admin/** endpoints are secured with Basic http authentication over http. For a production grade product, it should be at least over https or best using OAuth2.
-
 Example calls:
 
-- curl admin:password@localhost:8765/garage/api/admin/status
+- Authenticated call : curl http://localhost:8765/garage/api/admin/status
 
-Answers: 
+Answer: 
 
-{"nbLevels":3,"nbTotalLots":9,"nbOccupiedLots":0,"nbFreeLots":9,"levels":[{"id":0,"nbOccupiedLots":0,"nbFreeLots":3,"level":{"inUse":true,"nbLevelLots":3},"vehicles":[]},{"id":1,"nbOccupiedLots":0,"nbFreeLots":2,"level":{"inUse":true,"nbLevelLots":2},"vehicles":[]},{"id":2,"nbOccupiedLots":0,"nbFreeLots":4,"level":{"inUse":true,"nbLevelLots":4},"vehicles":[]}]}
+{
+   "nbOccupiedLots": 7,
+   "nbFreeLots": 0,
+   "levels":    [
+            {
+         "id": 0,
+         "inUse": true,
+         "nbLevelLots": 3,
+         "freeLots": [],
+         "occupiedLots":          [
+                        {
+               "id": 0,
+               "level_id": 0,
+               "vehicle_id": "99-AV-D0"
+            },
+                        {
+               "id": 1,
+               "level_id": 0,
+               "vehicle_id": "99-AV-D1"
+            },
+                        {
+               "id": 2,
+               "level_id": 0,
+               "vehicle_id": "99-AV-D2"
+            }
+         ]
+      },
+            {
+         "id": 1,
+         "inUse": true,
+         "nbLevelLots": 4,
+         "freeLots": [],
+         "occupiedLots":          [
+                        {
+               "id": 0,
+               "level_id": 1,
+               "vehicle_id": "99-AV-D3"
+            },
+                        {
+               "id": 1,
+               "level_id": 1,
+               "vehicle_id": "99-AV-D4"
+            },
+                        {
+               "id": 2,
+               "level_id": 1,
+               "vehicle_id": "99-AV-D5"
+            },
+                        {
+               "id": 3,
+               "level_id": 1,
+               "vehicle_id": "99-AV-D6"
+            }
+         ]
+      }
+   ]
+}
 
-- curl admin:choucroute@localhost:8765/garage/api/admin/status
+- Unauthenticated call :  curl http://localhost:8765/garage/api/admin/status
 
-{"timestamp":1458584084945,"status":401,"error":"Unauthorized","message":"Bad credentials","path":"/api/admin/status"}
+{"error":"unauthorized","error_description":"Full authentication is required to access this resource"}

@@ -6,9 +6,10 @@ Demonstrated concepts:
 * Integration testing using Docker
 * Service discovery
 * Microservices arch
+* Oauth2 session management
 * MongoDB as a service
 
-Base URLs:
+Base URLs once deployed locally:
 
 http://localhost:8765/garage/api/
 

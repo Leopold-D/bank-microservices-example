@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 /**
- * That's a PoC, better log than no.
- * @author leo
+ * @author Leopold
  *
  */
 @Component
@@ -24,7 +23,6 @@ public class APIUtils {
     private LoadBalancerClient loadBalancer;
 
     /**
-     * TODO: Complement this with a simpler version without fallback-url!
      *
      * @param serviceId
      * @param fallbackUri

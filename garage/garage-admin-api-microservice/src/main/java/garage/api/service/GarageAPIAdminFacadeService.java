@@ -175,8 +175,6 @@ public class GarageAPIAdminFacadeService {
 
 	/**
 	 * Delete a level, ie : town hasn't approved to build so high/low !
-	 * 
-	 * @param level_id
 	 * @return
 	 */
 	@ApiOperation(value = "mDeleteLevel", nickname = "mDeleteLevel")

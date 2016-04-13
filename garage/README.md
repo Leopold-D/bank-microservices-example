@@ -56,9 +56,10 @@ should be queryable.
 
 ## Implementation
 
-- Split into 2 services (API, CORE) providing shells and PoC for what could be a deployable Garage Management service
+- Split into 3 services (API, API Admin, CORE) providing shells and PoC for what could be a deployable Garage Management service
 - Shared project contains shared entities to avoid duplication
-- Only API is exposed, CORE service is available only for localhost
+- Only API and Admin API are exposed, CORE service is available only for localhost
+- Admin API handle OAuth2 authenticated calls while API handles non authenticated calls
 - MongoDB has been used as a PoC for DB management (url : mongodb://<dbuser>:<dbpassword>@ds013579.mlab.com:13579/garage)
 
 ## Video
@@ -68,9 +69,11 @@ should be queryable.
 ## Testing
 
 - Base API tests are presents, testing @API level. SOAPUI is required to run them
-- Units tests are not yet done, focus has been made on service consistency
+- Units tests are present for the relevant, none workflow dependent methods (ie. Checking if a registration plate is valid).
 
 ## Coding rules
+
+Applied when possible (dto and db excluded).
 
 Prepend :
 a for class variables
@@ -83,6 +86,8 @@ CamelCase is used
 ## Sub-Levels ReadMe
 
 [Garage API](https://github.com/Leopold-D/microservices-example/blob/garage/garage/garage-api-microservice/README.md)
+
+[Garage Admin API](https://github.com/Leopold-D/microservices-example/blob/garage/garage/garage-admin-api-microservice/README.md)
 
 [Garage Core](https://github.com/Leopold-D/microservices-example/blob/garage/garage/garage-core-microservice/README.md)
 
