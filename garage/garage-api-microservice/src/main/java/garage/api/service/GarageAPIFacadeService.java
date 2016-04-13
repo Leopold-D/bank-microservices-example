@@ -77,7 +77,7 @@ public class GarageAPIFacadeService {
 		try {
 			LOG.info("Check Vehicle");
 			pVehicle = aGarageAPIService.mCheckVehicle(pVehicle);
-			LOG.info("Vehicle Type: " + pVehicle.getVehicleType().toString());
+			LOG.info("Vehicle Type: " + pVehicle.getType().toString());
 		} catch (Exception e) {
 			return aAPIUtils.createResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

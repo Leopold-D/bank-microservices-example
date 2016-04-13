@@ -9,6 +9,6 @@ public class MotorbikeModel extends VehicleModel{
 	// Specific Motorbike properties should be held here
 	MotorbikeModel(VehicleModel lMotorbike){
 		super(lMotorbike);
-		setVehicleType(VehicleType.MOTORBIKE);
+		setType(VehicleType.MOTORBIKE);
 	}
 }

@@ -62,10 +62,6 @@ should be queryable.
 - Admin API handle OAuth2 authenticated calls while API handles non authenticated calls
 - MongoDB has been used as a PoC for DB management (url : mongodb://<dbuser>:<dbpassword>@ds013579.mlab.com:13579/garage)
 
-## Video
-
-[Garage Video](http://youtu.be/7ezeuhtfY4I?hd=1)
-
 ## Testing
 
 - Base API tests are presents, testing @API level. SOAPUI is required to run them

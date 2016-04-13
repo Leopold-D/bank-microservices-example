@@ -23,7 +23,7 @@ public class VehicleModel {
 	private Integer level_id;
 	private Integer lot_id;
 
-	private VehicleType vehicleType = VehicleType.UNDEFINED;
+	private VehicleType type;
 	private String brand;
 
 	public VehicleModel(VehicleModel lVehicle) {
@@ -31,13 +31,17 @@ public class VehicleModel {
 	}
 	
 	public VehicleModel mCheckVehicleType() {
-		switch (this.vehicleType) {
-		case MOTORBIKE:
-			return (new MotorbikeModel(this));
-		case CAR:
-			return (new CarModel(this));
-		default:
-			return this;
+		if (null != this.type) {
+			switch (this.type) {
+			case MOTORBIKE:
+				return (new MotorbikeModel(this));
+			case CAR:
+				return (new CarModel(this));
+			default:
+				break;
+			}
 		}
+		this.type = VehicleType.UNDEFINED;
+		return this;
 	}
 }

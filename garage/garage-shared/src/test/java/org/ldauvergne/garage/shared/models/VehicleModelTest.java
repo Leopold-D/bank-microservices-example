@@ -7,7 +7,7 @@ public class VehicleModelTest extends TestCase{
     public void testCanCreateVehicleTest()
     {
     	VehicleModel lVehicle = new VehicleModel("TEST", null, null, VehicleType.UNDEFINED,  "DUCATI");
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertEquals(VehicleType.UNDEFINED, lVehicle.getType());
     }
     
     public void testCanCreateMotorbike()
@@ -18,7 +18,7 @@ public class VehicleModelTest extends TestCase{
     	
     	lVehicle=lVehicle.mCheckVehicleType();
     	
-    	assertEquals(VehicleType.MOTORBIKE, lVehicle.getVehicleType());
+    	assertEquals(VehicleType.MOTORBIKE, lVehicle.getType());
     	
     	assertTrue(lVehicle instanceof MotorbikeModel);
     }
@@ -35,7 +35,7 @@ public class VehicleModelTest extends TestCase{
     	
     	assertTrue(lVehicle instanceof CarModel);
     	
-    	assertEquals(VehicleType.CAR, lVehicle.getVehicleType());
+    	assertEquals(VehicleType.CAR, lVehicle.getType());
     	
 		assertEquals(lVehicleId, lVehicle.getRegistration_id());
     }
@@ -48,7 +48,7 @@ public class VehicleModelTest extends TestCase{
     	
     	lVehicle=lVehicle.mCheckVehicleType();
     	
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertEquals(VehicleType.UNDEFINED, lVehicle.getType());
     	
     	assertTrue(lVehicle instanceof VehicleModel);
     }
@@ -61,7 +61,7 @@ public class VehicleModelTest extends TestCase{
     	
     	VehicleModel lVehicle = new VehicleModel(lVehicleId, null, null, VehicleType.UNDEFINED, lVehicleBrand);
 
-    	assertEquals(VehicleType.UNDEFINED, lVehicle.getVehicleType());
+    	assertEquals(VehicleType.UNDEFINED, lVehicle.getType());
     	
     	lVehicle=lVehicle.mCheckVehicleType();
     	

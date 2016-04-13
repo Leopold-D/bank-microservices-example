@@ -9,6 +9,6 @@ public class CarModel extends VehicleModel{
 	// Car properties should be held here
 	CarModel(VehicleModel lCar){
 		super(lCar);
-		setVehicleType(VehicleType.CAR);
+		setType(VehicleType.CAR);
 	}
 }
