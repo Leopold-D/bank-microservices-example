@@ -36,8 +36,6 @@ This service is the exposed API facade for the Garage Project, it takes the clie
 
 ]}
 
-Full Swagger Documentation can be visible at this URL when deployed : http://localhost:8765/garage/swagger-ui.html#/
-
 ## Security
 
 As for this demo project, the /api/admin/** endpoints are secured with OAuth2 authentication, you need a valid Token to access the service. The OAuth2 workflows have not all been implemented at a state of the art level as it's out of scope for the current task.
@@ -48,16 +46,16 @@ Validated call to get a token from the auth service is :
 
 - Resource Owner Password Credentials Grant
 
-''curl -s acme:acmesecret@localhost:9999/uaa/oauth/token  \
+*curl -s acme:acmesecret@localhost:9999/uaa/oauth/token  \
  -d grant_type=password \
  -d client_id=acme \
  -d scope=management \
  -d username=user \
- -d password=password | jq .''
+ -d password=password | jq .*
 
 - Implicit Grant
 
-''http://localhost:9999/uaa/oauth/authorize? response_type=token& client_id=acme& redirect_uri=http://example.com& scope=management& state=65452''
+*http://localhost:9999/uaa/oauth/authorize? response_type=token& client_id=acme& redirect_uri=http://example.com& scope=management& state=65452*
 
 ## Documentation
 
@@ -146,3 +144,5 @@ Answer:
 - Unauthenticated call :  curl http://localhost:8765/garage/api/admin/status
 
 {"error":"unauthorized","error_description":"Full authentication is required to access this resource"}
+
+Calls not targetting /api/admin/* do not need to be authenticated.

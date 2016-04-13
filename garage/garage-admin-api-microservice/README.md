@@ -1,4 +1,4 @@
-# Garage API microservice
+# Garage Admin API microservice
 
 ## Intro
 
